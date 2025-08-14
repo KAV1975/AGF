@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="/src/css/style.css" />
+    <title>AGF</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Подключение библиотеки для графиков    "https://cdn.jsdelivr.net/npm/chart.js"-->
+  </head>
+  <body>
+
+    <section class="top-section">
+      <div class="container-left">
+        <div class="input">
+          <h1>ВВЕДИТЕ ИСХОДНЫЕ ДАННЫЕ</h1>
+          <div class="input-area">
+            <label>Площадь помещения, м²:    </label>
+            <input  inputmode="decimal" type="number" name="площадь" min="700" max="2500" step="0.01" id="number1" placeholder="от 700 до 2500" required>  <!-- required - обязательное поле.--> 
+          </div>
+
+          <div class="input-area">
+            <label>Арендная ставка, руб/м² в месяц:  </label>
+            <input  inputmode="decimal" type="number" name="Аредная ставка" min="0" max="5000" step="0.01" id="number2" placeholder="от 0.00">  
+          </div>
+
+          <div class="input-area">
+            <label>Сумма кредита, руб:  </label>
+            <input inputmode="decimal" type="number" name="Сумма кредита" min="0" max="100000000" step="100000" id="number3" placeholder="от 0.00">  
+          </div>
+
+
+          <div class="input-area">
+            <label>Срок кредита, мес:</label> 
+            <input  inputmode="decimal" type="number" name="Срок кредита" min="0" max="84" step="1" id="number4" placeholder="от 1 до 84">  
+          </div>
+
+          <div>
+            <label>Процентная ставка по кредиту, % годовых: </label>
+            <input inputmode="decimal"  type="number" name="Процентная ставка" min="0" max="1"  step="0.01" id="number5" placeholder="от 0.00">  
+          </div>
+        </div>
+
+
+        <div class="out">
+          <div>
+            <button class="btn ">РАССЧИТАТЬ*</button>
+          </div>
+          <div class="out-area">
+            <p>ИНВЕСТИЦИИ <span id="out1">0</span>   руб</p> 
+          </div>
+
+          <div class="out-area">
+            <p>Рентабельность инвестиций <span id="out2">0</span></p> 
+          </div>
+
+          <div class="out-area">
+            <p>Рентабельность продаж <span id="out3">0</span></p> 
+          </div>
+
+          <div class="out-area">
+            <p>Срок окупаемости <span id="out4">0</span></p> 
+          </div>
+
+          <!-- При необходимости раскоментируем-->
+          <!-- <div class="out-area">
+            <p>Дисконтированный срок окупаемости <span id="out5">0</span></p> 
+          </div> -->
+
+         </div>
+
+      </div>
+
+<!-- График справа -->
+<div class="container-right">
+ <canvas class = "chart_" id="myChart" ></canvas>
+</div>
+    </section>
+
+
+    <table class="table" id="ProfitAndLoss">
+      <thead class="table-fields">
+        <th>НАИМЕНОВАНИЕ</th>
+        <th>ПЕРИОД 7 ЛЕТ</th>
+        <th>1-й год</th>
+        <th>2-й год</th>
+        <th>3-й год</th>
+        <th>4-й год</th>
+        <th>5-й год</th>
+        <th>6-й год</th>
+        <th>7-й год</th>
+      </thead>
+      <tbody class="table-cells">
+        <tr>
+          <td class="table-fields__name">ВЫРУЧКА</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+        </tr>
+        <tr>
+          <td class="table-fields__name">ОПЕРАЦИОННЫЕ РАСХОДЫ</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+        </tr>
+        <tr>
+          <td class="table-fields__name cell__total">ВАЛОВАЯ ПРИБЫЛЬ (ВП)</td>
+          <td class="cell cell__total">0</td>
+          <td class="cell cell__total">0</td>
+          <td class="cell cell__total">0</td>
+          <td class="cell cell__total">0</td>
+          <td class="cell cell__total">0</td>
+          <td class="cell cell__total">0</td>
+          <td class="cell cell__total">0</td>
+          <td class="cell cell__total">0</td>
+        </tr>
+        <tr>
+          <td class="table-fields__name cell__total-effectiveness">Рентабельность по ВП</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+        </tr>
+        <tr>
+          <td class="table-fields__name">ПРОЦЕНТЫ ПО КРЕДИТАМ</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+        </tr>
+        <tr>
+          <td class="table-fields__name">НАЛОГИ**</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+        </tr>
+        <tr>
+          <td class="table-fields__name cell__total">ЧИСТАЯ ПРИБЫЛЬ</td>
+          <td class="cell cell__total">0</td>
+          <td class="cell cell__total">0</td>
+          <td class="cell cell__total">0</td>
+          <td class="cell cell__total">0</td>
+          <td class="cell cell__total">0</td>
+          <td class="cell cell__total">0</td>
+          <td class="cell cell__total">0</td>
+          <td class="cell cell__total">0</td>
+        </tr>
+        <tr">
+          <td class="table-fields__name cell__total-effectiveness">Рентабельность продаж</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+        </tr>
+        <tr>
+          <td class="table-fields__name cell__total-effectiveness">Рентабельность инвестиций</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+        </tr>
+        <tr>
+          <td colspan="9">
+              _______________
+          </td>
+        </tr>
+        <tr>
+          <td class="table-fields__name">Предполагаемый доход от Бизнеса</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+        </tr>
+        <tr>
+          <td class="table-fields__name">Доходность от банковского депозита***</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+        </tr>
+        <tr>
+          <td class="table-fields__name cell__total-effectiveness">Ключевая ставка</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+        </tr>
+        <tfoot>
+          <td colspan="9" class = "cell-foot">
+            ** Налоги расчитаны при условии УСН (т.к. ОКВЭД 93.13  -  Деятельность фитнес-центров. Операции освобождены от НДС на основании ст 149 п2 пп14.1 НК РФ.), Д*6% или (Д-Р)*15% расччитываются автоматически по более выгодному варианту.
+            <br>
+            *** Банковский депозит рассчитывается по Ключевой ствавке.
+            <br>
+            * Расчет ориентировочный, без привязки к конкретному объекту. 
+          </td>
+        </tfoot>
+      </tbody>
+    </table>
+
+
+
+  <script src="/src/js/script.js"></script>
+  </body>
+</html>
