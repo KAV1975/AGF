@@ -102,6 +102,8 @@ h1
 
 
 .input-area
+    // align-items: left
+    // gap:5px
     margin-bottom: 15px
     position: relative
 
@@ -109,7 +111,10 @@ h1
 input
     width: 30%
 
-#number1, #number2
+#number1
+    width: 20% 
+
+#number2
     width: 20%
 
 
@@ -119,6 +124,7 @@ input
 
 label
     margin-right: 1%
+
     
 .out-area
     margin-bottom: 10px    
@@ -152,5 +158,19 @@ span
     color: #000000
 
 
+.tooltiptext
+    visibility: hidden
+    position: relative
+    margin-left:0%
+    top:100%
+    color: #FF0000
+    font-weight: bold
+    font-style: italic
 
+.error
+    border: 2px solid #FF0000
+
+.show 
+    visibility: visible
+    opacity: 1
 
