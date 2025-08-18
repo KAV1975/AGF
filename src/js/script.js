@@ -8,16 +8,21 @@ let square -плошадь Помещения вводимое значение.
 let keyRate -Ключевая ставка. Впринципе можно брать с внешнего источника. Если ввод. Важно: при вводе учитывать % или число!. ПРИ ВВОДЕ НАПИСАТЬ ПРОВЕРКУ НА >= 0 И ЧИСЛОВОЙ ТИП
   */
 
+//ЗАДАЕМ ГРАНИЦЫ ДОПУСТИМЫХ ПЛОЩАДЕЙ И КЛЮЧЕВУЮ СТАВКУ (в перпективе брать в WEB)
+const left_ = 700;
+const right_ = 2500;
+const keyRate_ = 0.18;
+
 // ФУНКЦИЯ МОДЕЛИ
 function modelAGF(
-  square = 700,
+  square = left_,
   rentalRate = 0,
   loanAmount = 0,
   interestRate = 0,
   loanPeriod = 0,
-  keyRate = 0.18
+  keyRate = keyRate_
 ) {
-  const flag = square >= 700 && square <= 2500 ? true : false; // Для условия проверки интервала Площади
+  const flag = square >= left_ && square <= right_ ? true : false; // Для условия проверки интервала Площади
   //2. Переменные (наша сатистика и базовая модель)
 
   const price = 14000; // Базовая цена на 1-й год
@@ -214,32 +219,65 @@ function modelAGF(
   // ИНВЕСТИЦИИ В ОТКРЫТИЕ
   //Стоимости инвестиций постатейно (объект, для возможности быстрых корректировок, при необходимости)
   const investment = {
-    constructionInstallationWorks: 10500 * square,
-    electrical: 4300 * square,
-    waterAndSewage: 2900 * square,
-    ventilationAndConditioning: 5800 * square,
-    automaticFireAlarmSystem: 1600 * square,
-    accessControlManagementSystemAndCRM: 10 ** 6,
-    acousticsVideoAndcomputerNetworks:
-      square < 1000 ? 1.2 * 10 ** 6 : 1200 * square,
-    lockerRoomFurniture: 0.1 * 1.25 * 5000 * salesRatio(square) * square,
-    furnitureSalesDepartment: square <= 1000 ? 2 * 10 ** 5 : 200 * square,
-    furnitureReception: square <= 1000 ? 2 * 10 ** 5 : 200 * square,
-    furnitureBar: square <= 1000 ? 2 * 10 ** 5 : 200 * square,
-    equipment:
-      square <= 1000
-        ? 1.5 * 10 ** 7
-        : 45155 * square - 4365 * square * Math.log(square),
-    advertisementConstruction: square <= 1000 ? 5 * 10 ** 5 : 500 * square,
-    other: 5 * 10 ** 5,
-    startupServices:
-      square <= 1000 ? 1.2 * 10 ** 7 : 3240 * square + 8.856 * 10 ** 6,
+    constructionInstallationWorks: [
+      flag ? 10500 * square : 0,
+      "СМР (Проектирование, Отделочные работы)",
+    ],
+    electrical: [flag ? 4300 * square : 0, "Электроснабжения"],
+    waterAndSewage: [flag ? 2900 * square : 0, "Водоснабжение и канализация"],
+    ventilationAndConditioning: [
+      flag ? 5800 * square : 0,
+      "Вентиляция и кондиционирование",
+    ],
+    automaticFireAlarmSystem: [flag ? 1600 * square : 0, "АПС и СОУЭ"],
+    accessControlManagementSystemAndCRM: [flag ? 10 ** 6 : 0, "СКУД и CRM"],
+    acousticsVideoAndcomputerNetworks: [
+      flag ? (square < 1000 ? 1.2 * 10 ** 6 : 1200 * square) : 0,
+      "Акустика, видеонаблюдение и СКС",
+    ],
+    lockerRoomFurniture: [
+      flag ? 0.1 * 1.25 * 5000 * salesRatio(square) * square : 0,
+      "Мебель раздевалки",
+    ],
+    furnitureSalesDepartment: [
+      flag ? (square <= 1000 ? 2 * 10 ** 5 : 200 * square) : 0,
+      "Мебель отдела продаж",
+    ],
+    furnitureReception: [
+      flag ? (square <= 1000 ? 2 * 10 ** 5 : 200 * square) : 0,
+      "Меебль рецепции",
+    ],
+    furnitureBar: [
+      flag ? (square <= 1000 ? 2 * 10 ** 5 : 200 * square) : 0,
+      "Мебель бара",
+    ],
+    equipment: [
+      flag
+        ? square <= 1000
+          ? 1.5 * 10 ** 7
+          : 45155 * square - 4365 * square * Math.log(square)
+        : 0,
+      "Оборудование",
+    ],
+    advertisementConstruction: [
+      flag ? (square <= 1000 ? 5 * 10 ** 5 : 500 * square) : 0,
+      "Рекламная вывеска",
+    ],
+    other: [flag ? 5 * 10 ** 5 : 0, "Наполнение клуба"],
+    startupServices: [
+      flag
+        ? square <= 1000
+          ? 1.2 * 10 ** 7
+          : 3240 * square + 8.856 * 10 ** 6
+        : 0,
+      "Услуги МДК",
+    ],
   };
 
   // Расчет суммы инвестиций
   let sumInvestments = 0;
   for (let key in investment) {
-    sumInvestments += investment[key];
+    sumInvestments += investment[key][0];
   }
 
   //-------------------------------------------------------------------------
@@ -1129,10 +1167,10 @@ function modelAGF(
   const meanProfitabilityNT = sumNetProfit / sumEarnings;
 
   //Расчет депозита на сумму Инвестиций для сравнения
-
+  const interestDeposit = keyRate - 0.02; //Проценты по депозиту = ключевая ставка минус 2 пп
   const depositMonth = {};
   for (let i = 1; i <= 84; i++) {
-    depositMonth[i] = interestMonth(sumInvestments, keyRate, i);
+    depositMonth[i] = interestMonth(sumInvestments, interestDeposit, i);
   }
 
   const depositYear = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 };
@@ -1149,6 +1187,7 @@ function modelAGF(
   const techObject2 = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }; // технически для подстановки, если Площадь не введена или равна 0. Где дробные
   const modelIndicators = {
     sumInvestments: flag ? roundingWithMultiplicity(sumInvestments, 100) : 0, //инвестиции округление до целых с кратностью 100
+    investment: investment, //Объект Инвестиции для Таблицы Инвестиции
     paybackPeriodYear: flag ? paybackPeriodYear : 0.0,
     discountedPaybackPeriod: flag ? discountedPaybackPeriod : 0.0,
     meanProfitabilityI: flag ? meanProfitabilityI : 0.0,
@@ -1173,6 +1212,8 @@ function modelAGF(
     sumDeposit: flag ? sumDeposit : 0,
     ccfWithInvestYear: flag ? ccfWithInvestYear : techObject1, //для графика окупаемости
     keyRate: keyRate,
+    meanTaxes_6: flag ? optionTaxes_6 / 7 : 0,
+    meanTaxes_15: flag ? optionTaxes_15 / 7 : 0,
   };
   return modelIndicators;
 }
@@ -1211,15 +1252,18 @@ const myChart = new Chart(ctx, {
         data: Object.values(data),
         radius: 0,
         borderWidth: 3,
+        tension: 0.4, // Сглаживание (0 = нет, 1 = макс.)
+        borderColor: "black", // Пример цвета
+        fill: false, // Не заливать область под линией
       },
       {
         label: "Ноль",
         data: [0, 0, 0, 0, 0, 0, 0, 0],
         borderColor: "rgb(255, 99, 132)",
         radius: 0,
-        backgroundColor: "rgb(255, 99, 132)",
         borderWidth: 2,
         borderDash: [5, 5],
+        tension: 0, // Оставить прямую линию
       },
     ],
   },
@@ -1240,36 +1284,406 @@ const myChart = new Chart(ctx, {
         position: "right",
       },
     },
-    // maintainAspectRatio: false,
-    // responsive: false,
-    responsive: true, // уточнить функционал!!!!
-    borderColor: "black",
-    backgroundColor: "black",
-    borderWidth: 2,
+    responsive: true,
     scales: {
       y: {
         beginAtZero: true,
-        // color: "red",
       },
       x: {
         beginAtZero: true,
-        // display: true,
       },
     },
   },
 });
 
 // Функция замены данных в Графике 1
-function updateChart(chart, dataNew) {
-  chart.data.datasets[0].data = Object.values(dataNew);
+function updateChart(chart, dataNew_1, dataNew_2 = [0, 0, 0, 0, 0, 0, 0, 0]) {
+  chart.data.datasets[0].data = Object.values(dataNew_1);
+  chart.data.datasets[1].data = Object.values(dataNew_2);
   chart.update();
 }
 
-//---------------------------------------------------------------------
+//--------------------------------------------------------------------------
+// Заполняем данные для Диаграммы от 700 до 2500 м² с шагом 100 м²
+const data1 = {};
+
+for (let i = left_; i <= right_; i += 100) {
+  data1[i] = modelAGF(i)["sumInvestments"];
+}
+
+// Диаграмма. Сумма инвсетиций в зависиомсти от площади
+const ctx1 = document.getElementById("myChart1").getContext("2d");
+
+//Рисунок штриховки
+const patternCanvas = document.createElement("canvas");
+patternCanvas.width = 10;
+patternCanvas.height = 10;
+const patternCtx = patternCanvas.getContext("2d");
+
+// Рисуем черные диагональные линии
+patternCtx.strokeStyle = "black";
+patternCtx.lineWidth = 1;
+patternCtx.beginPath();
+patternCtx.moveTo(0, 0);
+patternCtx.lineTo(10, 10);
+patternCtx.stroke();
+patternCtx.moveTo(0, 5);
+patternCtx.lineTo(5, 10);
+patternCtx.stroke();
+
+const pattern = ctx1.createPattern(patternCanvas, "repeat");
+
+const myChart1 = new Chart(ctx1, {
+  type: "bar",
+  data: {
+    labels: Object.keys(data1),
+    datasets: [
+      {
+        label: "Сумма инвестиций",
+        data: Object.values(data1),
+        borderWidth: 2,
+        borderColor: "black",
+        backgroundColor: pattern, // Применяем паттерн
+      },
+    ],
+  },
+
+  options: {
+    plugins: {
+      title: {
+        display: true,
+        text: "Сумма инвестиций от площади помещения",
+        font: {
+          family: "Times New Roman",
+          size: 16,
+          weight: "bold",
+        },
+      },
+      legend: {
+        display: false,
+        position: "right",
+      },
+    },
+    responsive: true,
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Сумма инвестиций, руб",
+          font: {
+            family: "Times New Roman",
+            size: 12,
+            // weight: "bold",
+          },
+        },
+      },
+      x: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Площадь помещения, м²",
+          font: {
+            family: "Times New Roman",
+            size: 12,
+            // weight: "bold",
+          },
+        },
+      },
+    },
+  },
+});
+
+//График 2. Анализ рентабельности мнвестиций от площади, при заданной Арендендной ставке
+// Данные для шаблона от 700 до 2500 м² с шагом 100 м²
+
+const data2 = {};
+const data2_2 = {};
+
+for (let i = left_; i <= right_; i += 100) {
+  (data2[i] =
+    (modelAGF(i)["sumNetProfit"] / 7 / modelAGF(i)["sumInvestments"]) * 100),
+    (data2_2[i] = keyRate_ * 100);
+}
+
+const ctx2 = document.getElementById("myChart2").getContext("2d");
+const myChart2 = new Chart(ctx2, {
+  type: "line",
+  data: {
+    labels: Object.keys(data2),
+    datasets: [
+      {
+        label: "Рентабельность инвестиций",
+        data: Object.values(data2),
+        radius: 0,
+        borderWidth: 3,
+        tension: 0.4, // Сглаживание (0 = нет, 1 = макс.)
+        borderColor: "black", //цвет кривой
+        fill: false, // Не заливать область под линией
+      },
+      {
+        label: "Ключевая ставка",
+        data: Object.values(data2_2),
+        borderColor: "rgb(255, 99, 132)",
+        radius: 0,
+        borderWidth: 2,
+        borderDash: [5, 5],
+        tension: 0, // Оставить прямую линию
+      },
+    ],
+  },
+
+  options: {
+    plugins: {
+      title: {
+        display: true,
+        text: "Анализ рентабельности инвестиций от Площади.",
+        font: {
+          family: "Times New Roman",
+          size: 16,
+          weight: "bold",
+        },
+      },
+      legend: {
+        display: true,
+        position: "bottom",
+        labels: {
+          font: {
+            family: "Times New Roman",
+            size: 10,
+          },
+          padding: 20, // Отступ между элементами легенды
+          // usePointStyle: true, // Использовать стиль точки вместо линии
+        },
+      },
+    },
+    responsive: true, // уточнить функционал!!!!
+    borderWidth: 2,
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Показатель эффективности, %",
+          font: {
+            family: "Times New Roman",
+            size: 12,
+            // weight: "bold",
+          },
+        },
+      },
+      x: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Площадь помещения, м²",
+          font: {
+            family: "Times New Roman",
+            size: 12,
+            // weight: "bold",
+          },
+        },
+      },
+    },
+  },
+});
+
+//График 3. Анализ рентабельности инвестиций от Арендендной ставке, при заданной площади
+// Данные для шаблона от 0 до 1200  с шагом 50 руб/ м² в мес
+
+const data3 = {};
+const data3_2 = {};
+
+for (let i = 0; i <= 1200; i += 50) {
+  (data3[i] =
+    (modelAGF(left_, i)["sumNetProfit"] /
+      7 /
+      modelAGF(left_, i)["sumInvestments"]) *
+    100),
+    (data3_2[i] = keyRate_ * 100);
+}
+
+const ctx3 = document.getElementById("myChart3").getContext("2d");
+const myChart3 = new Chart(ctx3, {
+  type: "line",
+  data: {
+    labels: Object.keys(data3),
+    datasets: [
+      {
+        label: "Рентабельность инвестиций",
+        data: Object.values(data3),
+        radius: 0,
+        borderWidth: 3,
+        tension: 0.4, // Сглаживание (0 = нет, 1 = макс.)
+        borderColor: "black", //цвет кривой
+        fill: false, // Не заливать область под линией
+      },
+      {
+        label: "Ключевая ставка",
+        data: Object.values(data3_2),
+        borderColor: "rgb(255, 99, 132)",
+        radius: 0,
+        borderWidth: 2,
+        borderDash: [5, 5],
+        tension: 0, // Оставить прямую линию
+      },
+    ],
+  },
+
+  options: {
+    plugins: {
+      title: {
+        display: true,
+        text: "Анализ рентабельности инвестиций от Арендной ставки.",
+        font: {
+          family: "Times New Roman",
+          size: 16,
+          weight: "bold",
+        },
+      },
+      legend: {
+        display: true,
+        position: "bottom",
+        labels: {
+          font: {
+            family: "Times New Roman",
+            size: 10,
+          },
+          padding: 20, // Отступ между элементами легенды
+          // usePointStyle: true, // Использовать стиль точки вместо линии
+        },
+      },
+    },
+    responsive: true, // уточнить функционал!!!!
+    borderWidth: 2,
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Показатель эффективности, %",
+          font: {
+            family: "Times New Roman",
+            size: 12,
+            // weight: "bold",
+          },
+        },
+      },
+      x: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Арендная ставка, руб/м² в месяц",
+          font: {
+            family: "Times New Roman",
+            size: 12,
+            // weight: "bold",
+          },
+        },
+      },
+    },
+  },
+});
+
+//График 4. Анализ варианта налогообложения УСН от площади,
+// Данные для шаблона от 700 до 2500 м² с шагом 100 м²
+
+const data4 = {};
+const data4_2 = {};
+
+for (let i = left_; i <= right_; i += 100) {
+  (data4[i] = modelAGF(i)["meanTaxes_6"]),
+    (data4_2[i] = modelAGF(i)["meanTaxes_15"]);
+}
+
+console.log(data4);
+const ctx4 = document.getElementById("myChart4").getContext("2d");
+const myChart4 = new Chart(ctx4, {
+  type: "line",
+  data: {
+    labels: Object.keys(data4),
+    datasets: [
+      {
+        label: "Доходы * 6%",
+        data: Object.values(data4),
+        radius: 0,
+        borderWidth: 3,
+        tension: 0.4, // Сглаживание (0 = нет, 1 = макс.)
+        borderColor: "black", //цвет кривой
+        fill: false, // Не заливать область под линией
+      },
+      {
+        label: "(Доходы - расходы)*15%",
+        data: Object.values(data4_2),
+        borderColor: "grey",
+        radius: 0,
+        borderWidth: 3,
+        // borderDash: [5, 5],
+        tension: 0.4,
+      },
+    ],
+  },
+
+  options: {
+    plugins: {
+      title: {
+        display: true,
+        text: "Сравнение вариантов налогообложения (УСН) ",
+        font: {
+          family: "Times New Roman",
+          size: 16,
+          weight: "bold",
+        },
+      },
+      legend: {
+        display: true,
+        position: "bottom",
+        labels: {
+          font: {
+            family: "Times New Roman",
+            size: 10,
+          },
+          padding: 20, // Отступ между элементами легенды
+          // usePointStyle: true, // Использовать стиль точки вместо линии
+        },
+      },
+    },
+    responsive: true, // уточнить функционал!!!!
+    borderWidth: 2,
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Средняя сумма налогов в год (период 7 лет)",
+          font: {
+            family: "Times New Roman",
+            size: 12,
+            // weight: "bold",
+          },
+        },
+      },
+      x: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: "Площадь помещения, м²",
+          font: {
+            family: "Times New Roman",
+            size: 12,
+            // weight: "bold",
+          },
+        },
+      },
+    },
+  },
+});
+
+//-------------------------------------------------------------
 
 // ОБРАБОТКА ВВОДА НА САЙТЕ
 
-//  ФУНКЦИЯ, ЧТО ДЕЛАЕМ ПРИ СОБЫТИИ РАСЧЕТ ИЛИ ENTER
+//  ФУНКЦИЯ, ЧТО ДЕЛАЕМ ПРИ СОБЫТИИ "РАСЧЕТ" ИЛИ ENTER
 function calculate() {
   const square = Number(document.getElementById("number1").value);
   const rentalRate = Number(document.getElementById("number2").value);
@@ -1408,6 +1822,73 @@ function calculate() {
   Table1.rows.item(13).cells[1].innerText = `${model["keyRate"] * 100} %`;
 
   updateChart(myChart, Object.values(model["ccfWithInvestYear"])); // Обновляем График Окупаемости
+
+  // Вывод таблицы ИНВЕСТИЦИИ  на страницу
+  document.getElementById("invest").innerHTML = createInvestmentTable(
+    model["investment"],
+    square,
+    model["sumInvestments"]
+  );
+
+  //Данные для графика Анализа инвестиций от площади (площадь перебераем [700;2500], остальные параметры заданы моделью)
+
+  const dataNew2 = {};
+  const dataNew2_2 = {};
+
+  for (let i = left_; i <= right_; i += 100) {
+    dataNew2[i] =
+      (modelAGF(i, rentalRate, loanAmount, interestRate, loanPeriod)[
+        "sumNetProfit"
+      ] /
+        7 /
+        modelAGF(i, rentalRate, loanAmount, interestRate, loanPeriod)[
+          "sumInvestments"
+        ]) *
+      100;
+    dataNew2_2[i] = model["keyRate"] * 100;
+  }
+
+  updateChart(myChart2, dataNew2, dataNew2_2); // Обновляем График Анализа эффективности инвестиций от площади
+
+  //Данные для графика Анализа инвестиций от Арендной ставки (ставку перебераем [0;1200], остальные параметры заданы моделью)
+
+  const dataNew3 = {};
+  const dataNew3_2 = {};
+
+  for (let i = 0; i <= 1200; i += 50) {
+    dataNew3[i] =
+      (modelAGF(square, i, loanAmount, interestRate, loanPeriod)[
+        "sumNetProfit"
+      ] /
+        7 /
+        modelAGF(square, i, loanAmount, interestRate, loanPeriod)[
+          "sumInvestments"
+        ]) *
+      100;
+    dataNew3_2[i] = model["keyRate"] * 100;
+  }
+
+  updateChart(myChart3, dataNew3, dataNew3_2); // Обновляем График Анализа эффективности инвестиций от Арендной ставки
+
+  //Данные для графика Выбора варианта налогообложения
+
+  const dataNew4 = {};
+  const dataNew4_2 = {};
+
+  for (let i = left_; i <= right_; i += 100) {
+    dataNew4[i] = modelAGF(i, rentalRate, loanAmount, interestRate, loanPeriod)[
+      "meanTaxes_6"
+    ];
+    dataNew4_2[i] = modelAGF(
+      i,
+      rentalRate,
+      loanAmount,
+      interestRate,
+      loanPeriod
+    )["meanTaxes_15"];
+  }
+
+  updateChart(myChart4, dataNew4, dataNew4_2); // Обновляем График Выбора налогообложения
 }
 
 //----------------------------------------------------------------
@@ -1450,7 +1931,7 @@ document.getElementById("number3").addEventListener("input", function (e) {
 });
 //----------------------------------------------------------------------
 
-document.querySelector(".btn").addEventListener("click", calculate); // При начатии конопки "РАССЧИТАТЬ"
+document.querySelector(".btn").addEventListener("click", calculate); // При нажатии конопки "РАССЧИТАТЬ"
 // При нажатии ENTER
 document.addEventListener("keydown", function (event) {
   if (event.key == "Enter") {
@@ -1459,3 +1940,53 @@ document.addEventListener("keydown", function (event) {
 });
 
 //------------------
+//ФУНКЦИЯ ДОБАВЛЕНИЕ ТАБЛИЦЫ ИНВЕСТИЦИЙ.
+
+// Форматирование числа с разделителями тысяч
+function formatNumber(num) {
+  return new Intl.NumberFormat("ru-RU").format(Math.round(num));
+}
+
+// Создание HTML-таблицы с результатами
+function createInvestmentTable(investment, square_base, sumInvestments) {
+  const square =
+    square_base >= left_ && square_base <= right_ ? square_base : 0;
+  let html = `
+    <div class="table-container">
+        <table id="invest" border="1">
+            <caption class="table-caption">Расчет инвестиций для площади ${square} м²</caption>
+            <thead>
+                <tr>
+                    <th>Статья расходов</th>
+                    <th>Сумма (руб)</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+  // Добавляем строки для каждой статьи расходов
+  for (let key in investment) {
+    html += `
+            <tr>
+                <td>${investment[key][1]}</td>
+                <td style="text-align: right;">${formatNumber(
+                  investment[key][0]
+                )}</td>
+            </tr>
+        `;
+  }
+
+  // Добавляем итоговую строку
+  html += `
+            <tr style="font-weight: bold;">
+                <td>ИТОГО:</td>
+                <td style="text-align: right;">${formatNumber(
+                  sumInvestments
+                )}</td>
+            </tr>
+            </tbody>
+        </table>
+    `;
+
+  return html;
+}

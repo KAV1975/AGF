@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="src/css/style.css" />
     <title>AGF</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Подключение библиотеки для графиков    "https://cdn.jsdelivr.net/npm/chart.js"-->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Подключение библиотеки для графиков -->
   </head>
   <body>
 
@@ -78,14 +78,16 @@
 
       </div>
 
-<!-- График справа -->
+<!-- График справа сверху-->
 <div class="container-right">
  <canvas class = "chart_" id="myChart" ></canvas>
 </div>
-    </section>
+</section>
 
-
+<section class="top-section">
+<div class="table-container">
     <table class="table" id="ProfitAndLoss">
+      <caption class="table-caption"> Таблица №1.</caption>
       <thead class="table-fields">
         <th>НАИМЕНОВАНИЕ</th>
         <th>ПЕРИОД 7 ЛЕТ</th>
@@ -232,13 +234,47 @@
           <td colspan="9" class = "cell-foot">
             ** Налоги расчитаны при условии УСН (т.к. ОКВЭД 93.13  -  Деятельность фитнес-центров. Операции освобождены от НДС на основании ст 149 п2 пп14.1 НК РФ.), Д*6% или (Д-Р)*15% расччитываются автоматически по более выгодному варианту.
             <br>
-            *** Банковский депозит рассчитывается по Ключевой ствавке.
+            *** Банковский депозит рассчитывается по процентной ставке равной Ключевой ствавке минус 2 процентных пункта.
             <br>
             * Расчет ориентировочный, без привязки к конкретному объекту. 
           </td>
         </tfoot>
       </tbody>
     </table>
+    </div>
+</section>
+
+
+<section class="top-section">
+  <div class="container-left">    
+ <canvas class = "chart_" id="myChart2" ></canvas>
+ <canvas class = "chart_" id="myChart4" ></canvas>
+</div>
+
+<div class="container-right">
+   <canvas class = "chart_" id="myChart3" ></canvas>
+</div>
+
+</section>
+
+
+
+
+
+<section class="top-section">
+  <div class="container-left">    
+  <div class="table-container" id="invest"></div>
+
+</div>
+
+<div class="container-right">
+  <canvas class = "chart_" id="myChart1" ></canvas>
+  <!-- <canvas class = "chart_" id="myChart2" ></canvas> -->
+</div>
+
+</section>
+
+
 
 
 
