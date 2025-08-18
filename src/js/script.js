@@ -1288,6 +1288,31 @@ const myChart = new Chart(ctx, {
     scales: {
       y: {
         beginAtZero: true,
+        ticks: {
+          color: function (context) {
+            return context.tick.value < 0 ? "red" : "black";
+          },
+          callback: function (value) {
+            // Форматирование чисел с разрядностью и отрицательными значениями
+            return new Intl.NumberFormat("ru-RU", {
+              style: "decimal",
+              minimumFractionDigits: 0,
+              maximumFractionDigits: 0,
+            }).format(value);
+          },
+        },
+        afterBuildTicks: function (scale) {
+          // Принудительно включаем отрицательные значения в шкалу
+          const ticks = scale.ticks;
+          const min = Math.min(...ticks.map((t) => t.value));
+          if (min >= 0) {
+            // Добавляем отрицательные значения, если их нет
+            ticks.push({ value: -20000000 });
+            ticks.push({ value: -40000000 });
+            ticks.sort((a, b) => a.value - b.value);
+          }
+          return ticks;
+        },
       },
       x: {
         beginAtZero: true,
@@ -1596,7 +1621,6 @@ for (let i = left_; i <= right_; i += 100) {
     (data4_2[i] = modelAGF(i)["meanTaxes_15"]);
 }
 
-console.log(data4);
 const ctx4 = document.getElementById("myChart4").getContext("2d");
 const myChart4 = new Chart(ctx4, {
   type: "line",

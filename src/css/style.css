@@ -396,7 +396,6 @@ table {
   display: flex;
   flex-direction: column;
   gap: 20px;
-  padding: 15px;
 }
 
 canvas {
@@ -415,6 +414,21 @@ canvas .chart_ {
 }
 canvas .chart_:first-child {
   margin-bottom: 20px;
+}
+
+.text-block {
+  position: relative;
+  width: 100%;
+  min-height: fit-content;
+  padding: 15px;
+  background-color: white;
+  border-radius: 8px;
+  font-family: Times New Roman, sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  margin-top: 0;
+  flex-shrink: 0;
 }
 
 .table-container {
