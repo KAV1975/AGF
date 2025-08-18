@@ -1730,7 +1730,7 @@ function calculate() {
 
   // Выводим сумму инвестиций
   document.querySelector("#out1").innerText =
-    model["sumInvestments"].toLocaleString();
+    model["sumInvestments"].toLocaleString("ru-RU");
 
   // Выводим среднюю рентабельность Инвестиций за 7 лет
   if (model["meanProfitabilityI"] >= 0) {
@@ -1820,7 +1820,7 @@ function calculate() {
         }
       } else {
         Table1.rows.item(i).cells[j].innerText =
-          valueForTablePAL[i][j - 1].toLocaleString();
+          valueForTablePAL[i][j - 1].toLocaleString("ru-RU");
         if (valueForTablePAL[i][j - 1] < 0) {
           Table1.rows.item(i).cells[j].classList.add("red");
         } else {
@@ -1832,7 +1832,7 @@ function calculate() {
 
   for (let i = 1; i <= 8; i++) {
     Table1.rows.item(11).cells[i].innerText =
-      valueForTablePAL[7][i - 1].toLocaleString();
+      valueForTablePAL[7][i - 1].toLocaleString("ru-RU");
     Table1.rows.item(12).cells[i].innerText = Math.round(
       valueForTablePAL[11][i - 1]
     ).toLocaleString();
