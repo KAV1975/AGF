@@ -1835,7 +1835,7 @@ function calculate() {
       valueForTablePAL[7][i - 1].toLocaleString("ru-RU");
     Table1.rows.item(12).cells[i].innerText = Math.round(
       valueForTablePAL[11][i - 1]
-    ).toLocaleString();
+    ).toLocaleString("ru-RU");
     if (valueForTablePAL[7][i - 1] < 0) {
       Table1.rows.item(11).cells[i].classList.add("red");
     } else {
