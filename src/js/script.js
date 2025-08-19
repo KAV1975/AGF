@@ -76,6 +76,10 @@ function modelAGF(
   const countAdmin = 3;
   const countMOP = 4;
 
+  // ТЕХНИЧЕСКИЕ ОБЪЕКТЫ, ДЛЯ ПОДСТАНОВКИ ПО УСЛОВИЮ
+  const techObject1 = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }; // технически для подстановки, если Площадь не введена или равна 0. Где целые
+  const techObject2 = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }; // технически для подстановки, если Площадь не введена или равна 0. Где дробные
+
   //ФУНКЦИИ
 
   // Формула округления с определенной кратностью вниз
@@ -818,6 +822,14 @@ function modelAGF(
     fundsYear[Math.ceil(m / 12)] += fundsMonth[m];
   }
 
+  // ЗП (начисления) + фонды. Год. Для ДДС
+
+  //Фонды ЗП год
+  const fotAndFundsYear = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 };
+  for (let m = 1; m <= 7; m++) {
+    fotAndFundsYear[m] = fotYear[m] + fundsYear[m];
+  }
+
   //---------------------------------------------------------------
 
   // ИТОГО РАСХОДЫ ОПЕРАЦИОННЫЕ
@@ -1182,9 +1194,206 @@ function modelAGF(
     return accumulator + value;
   }, 0);
 
+  //---------------------------------------------------------------------------------------
+
+  // ДЛЯ ТАБЛИЦЫ ДДС
+
+  // Операционные доходы и расходы. Для Таблицы ДДС
+
+  //earnings: [flag ? earningsYear : techObject1, "Операционные поступления"],
+  //    expenses: [flag ? operatingExpensesYear : techObject1, "Операционные расходы",],
+  const operating = {
+    // earnings: [
+    //   { 1: " ", 2: " ", 3: " ", 4: " ", 5: " ", 6: " ", 7: " " },
+    //   "Операционные поступления",
+    // ],
+    cards: [
+      flag
+        ? Object.assign({ 0: 0 }, earningsCardYear)
+        : { 0: 0, ...techObject1 },
+      "Поступления по картам",
+    ],
+    coachs: [
+      flag ? Object.assign({ 0: 0 }, CoachInYear) : { 0: 0, ...techObject1 },
+      "Поступления по тренерам",
+    ],
+    rentIn: [
+      flag ? Object.assign({ 0: 0 }, RentInYear) : { 0: 0, ...techObject1 },
+      "Поступления по Аренде",
+    ],
+    otherIn: [
+      flag ? Object.assign({ 0: 0 }, otherInYear) : { 0: 0, ...techObject1 },
+      "Прочие поступления",
+    ],
+    // expenses: [
+    //   { 1: " ", 2: " ", 3: " ", 4: " ", 5: " ", 6: " ", 7: " " },
+    //   "Операционные расходы",
+    // ],
+    rentOut: [
+      flag ? Object.assign({ 0: 0 }, rentOutYear) : { 0: 0, ...techObject1 },
+      "Аренда помещения",
+    ],
+    fot: [
+      flag
+        ? Object.assign({ 0: 0 }, fotAndFundsYear)
+        : { 0: 0, ...techObject1 },
+      "Фонд оплаты труда (ФОТ)",
+    ],
+    utility: [
+      flag ? Object.assign({ 0: 0 }, utilityYear) : { 0: 0, ...techObject1 },
+      "Коммунальные платежи",
+    ],
+    payback: [
+      flag ? Object.assign({ 0: 0 }, paybackYear) : { 0: 0, ...techObject1 },
+      "Возвраты карт",
+    ],
+    cleaning: [
+      flag ? Object.assign({ 0: 0 }, cleaningYear) : { 0: 0, ...techObject1 },
+      "Клининг",
+    ],
+    marketing: [
+      flag ? Object.assign({ 0: 0 }, marketingYear) : { 0: 0, ...techObject1 },
+      "Маркетинг",
+    ],
+    acquiring: [
+      flag ? Object.assign({ 0: 0 }, acquiringYear) : { 0: 0, ...techObject1 },
+      "Эквайринг",
+    ],
+    exploitation: [
+      flag
+        ? Object.assign({ 0: 0 }, exploitationYear)
+        : { 0: 0, ...techObject1 },
+      "Эксплуатация инж. сетей, помещения, охрана",
+    ],
+    simulatorRepairs: [
+      flag
+        ? Object.assign({ 0: 0 }, simulatorRepairsYear)
+        : { 0: 0, ...techObject1 },
+      "ТО и ремонт тренажеров. Расходный инвентарь",
+    ],
+    it: [
+      flag ? Object.assign({ 0: 0 }, itYear) : { 0: 0, ...techObject1 },
+      "IT (телефония, Интернет, ПО, расходники ИТ)",
+    ],
+    crm: [
+      flag ? Object.assign({ 0: 0 }, crmYear) : { 0: 0, ...techObject1 },
+      "Софт, приложения, crm",
+    ],
+    bank: [
+      flag ? Object.assign({ 0: 0 }, bankYear) : { 0: 0, ...techObject1 },
+      "Банковское обслуживание",
+    ],
+    staff: [
+      flag ? Object.assign({ 0: 0 }, staffYear) : { 0: 0, ...techObject1 },
+      "Обучение и подбор персонала",
+    ],
+    household: [
+      flag ? Object.assign({ 0: 0 }, householYear) : { 0: 0, ...techObject1 },
+      "Текущие хозяйственные",
+    ],
+    plastic: [
+      flag ? Object.assign({ 0: 0 }, plasticYear) : { 0: 0, ...techObject1 },
+      "Пластиковые карты",
+    ],
+    copyright: [
+      flag ? Object.assign({ 0: 0 }, copyrightYear) : { 0: 0, ...techObject1 },
+      "Авторские права",
+    ],
+    insurance: [
+      flag ? Object.assign({ 0: 0 }, insuranceYear) : { 0: 0, ...techObject1 },
+      "Страхование",
+    ],
+    other: [
+      flag ? Object.assign({ 0: 0 }, otherYear) : { 0: 0, ...techObject1 },
+      "Прочие непредвиденные расходы",
+    ],
+    taxes: [
+      flag ? Object.assign({ 0: 0 }, taxesYear) : { 0: 0, ...techObject1 },
+      "Налоговые платежи",
+    ],
+    ccFOA: [{ 0: 0 }, "ЧДП от операционной деятельности"],
+  };
+
+  // Заполняем ЧДП от операционной деятельности
+
+  for (let i = 1; i <= 7; i++) {
+    operating.ccFOA[0][i] = flag
+      ? earningsYear[i] - operatingExpensesYear[i] - taxesYear[i]
+      : 0;
+  }
+
+  // ФИНАНСОВЫЙ БЛОК ДЛЯ ДДС
+  const OwnerContribution =
+    loanAmount < sumInvestments ? sumInvestments - loanAmount : 0; //Взнос Собственника
+
+  const credit = {
+    ownerIn: [
+      Object.assign({ 0: OwnerContribution }, techObject1),
+      "Взнос Собственника",
+    ],
+    dutyIn: [
+      Object.assign({ 0: loanAmount ?? 0 }, techObject1),
+      "Сумма кредита",
+    ],
+    dutyOut: [
+      flag
+        ? Object.assign({ 0: 0 }, bodyOfDutyPaymentYear)
+        : { 0: 0, ...techObject1 },
+      "Выплаты тела долга",
+    ],
+    interestOut: [
+      flag
+        ? Object.assign({ 0: 0 }, interestPaymentYear)
+        : { 0: 0, ...techObject1 },
+      "Выплаты процентов",
+    ],
+    cfFinance: [{ 0: 0, ...techObject1 }, "ЧДП от финансовой деятельности"],
+  };
+
+  //Заполняем Итоги по фин блоку
+  for (let i = 0; i <= 7; i++) {
+    credit.cfFinance[0][i] =
+      credit.ownerIn[0][i] +
+      credit.dutyIn[0][i] -
+      credit.dutyOut[0][i] -
+      credit.interestOut[0][i];
+  }
+
+  //ЧТД инвестиционной деятельности
+
+  const inv = {
+    cfInv: [
+      { 0: flag ? -sumInvestments : 0, ...techObject1 },
+      "ЧДП от инвестиционной деятельности",
+    ],
+  };
+
+  //Чистый денежный поток
+  const cf = {
+    cf: [
+      flag ? { 0: 0, ...techObject1 } : { 0: 0, ...techObject1 },
+      "Итоговый денежный поток по всем видам деятельности",
+    ],
+  };
+
+  //Заполняем Итоги по ИТОГУ
+  for (let i = 0; i <= 7; i++) {
+    cf.cf[0][i] =
+      operating.ccFOA[0][i] + credit.cfFinance[0][i] + inv.cfInv[0][i];
+  }
+
+  //Накопленный денежный поток
+  const ccf = {
+    ccf: [{ 0: cf.cf[0][0], ...techObject1 }, "НАКОПЛЕННЫЙ ДЕНЕЖНЫЙ ПОТОК"],
+  };
+  for (let i = 1; i <= 7; i++) {
+    ccf.ccf[0][i] = ccf.ccf[0][i - 1] + cf.cf[0][i];
+  }
+
+  //------------------------------------------------------------------------------------------------------
+
   // ВОЗВРАЩАЕМЫЙ ОБЪЕКТ
-  const techObject1 = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }; // технически для подстановки, если Площадь не введена или равна 0. Где целые
-  const techObject2 = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }; // технически для подстановки, если Площадь не введена или равна 0. Где дробные
+
   const modelIndicators = {
     sumInvestments: flag ? roundingWithMultiplicity(sumInvestments, 100) : 0, //инвестиции округление до целых с кратностью 100
     investment: investment, //Объект Инвестиции для Таблицы Инвестиции
@@ -1214,6 +1423,11 @@ function modelAGF(
     keyRate: keyRate,
     meanTaxes_6: flag ? optionTaxes_6 / 7 : 0,
     meanTaxes_15: flag ? optionTaxes_15 / 7 : 0,
+    operating: operating, //Объект Операционный блок по годам, с названиями статей
+    credit: credit, //Объект Финансовый блок, с названиями статей
+    inv: inv, //ЧДП от инвестиционной деятельности, с названиями статей
+    cf: cf, //ЧДП, с названиями статей
+    ccf: ccf, //Накопленный денежный поток
   };
   return modelIndicators;
 }
@@ -1778,7 +1992,7 @@ function calculate() {
   //   document.querySelector("#out5").className = "black";
   // }
 
-  //Заполнение Таблицы ПиУ
+  //Заполнение Таблицы ПиУ (ps: название на сайте "Прогноз финансовых результатов и анализ рентабельности на 7 лет")
 
   const valueForTablePAL = {
     1: model["earnings"],
@@ -1852,6 +2066,15 @@ function calculate() {
     model["investment"],
     square,
     model["sumInvestments"]
+  );
+
+  // Вывод таблицы cashFlow (ДДС)  на страницу
+  document.getElementById("cashFlow").innerHTML = createCashFlowTable(
+    model["ccf"],
+    model["operating"],
+    model["credit"],
+    model["inv"],
+    model["cf"]
   );
 
   //Данные для графика Анализа инвестиций от площади (площадь перебераем [700;2500], остальные параметры заданы моделью)
@@ -1963,15 +2186,17 @@ document.addEventListener("keydown", function (event) {
   }
 });
 
-//------------------
-//ФУНКЦИЯ ДОБАВЛЕНИЕ ТАБЛИЦЫ ИНВЕСТИЦИЙ.
+//----------------------------------------------------------
+//ФУНКЦИИ ДОБАВЛЕНИЕ ТАБЛИЦЫ ИНВЕСТИЦИЙ.
 
 // Форматирование числа с разделителями тысяч
 function formatNumber(num) {
   return new Intl.NumberFormat("ru-RU").format(Math.round(num));
 }
 
-// Создание HTML-таблицы с результатами
+// СОЗДАНИЕ HTML-ТАБЛИЦ С РЕЗУЛЬТАТАМИ
+
+// Таблица расчета инвестиций
 function createInvestmentTable(investment, square_base, sumInvestments) {
   const square =
     square_base >= left_ && square_base <= right_ ? square_base : 0;
@@ -2011,6 +2236,115 @@ function createInvestmentTable(investment, square_base, sumInvestments) {
             </tbody>
         </table>
     `;
+
+  return html;
+}
+
+// ТАБЛИЦА ДДС
+
+// Отрицательные значения в красный цвет
+function getNegativeClass(value) {
+  return (value ?? 0) < 0 ? "red" : "";
+}
+
+function createCashFlowTable(ccf, ...incomeElems) {
+  //собираем переданные элементы в массив
+
+  let html = `
+    <div class="table-container">
+        <table class="table" id="cashFlow">
+            <caption class="table-caption">Движение денежных средств</caption>
+            <thead class="table-fields">
+                <tr>
+                    <th>Наименование</th>
+                    <th>инвест</th>
+                    <th>1-й год</th>
+                    <th>2-й год</th>
+                    <th>3-й год</th>
+                    <th>4-й год</th>
+                    <th>5-й год</th>
+                    <th>6-й год</th>
+                    <th>7-й год</th>
+                </tr>
+            </thead>
+            <tbody>
+    `;
+
+  // Добавляем строки для каждой статьи
+
+  for (let income of incomeElems) {
+    const keys = Object.keys(income);
+
+    let lastElemKeys = keys[keys.length - 1];
+
+    for (let i = 0; i < keys.length - 1; i++) {
+      let key = keys[i];
+      html += `
+            <tr>
+                <td class="table-fields__name ">${income[key][1]}</td>
+                <td  class="cell">${formatNumber(income[key][0][0] ?? 0)}</td>
+                <td  class="cell">${formatNumber(income[key][0][1] ?? 0)}</td>
+                <td  class="cell">${formatNumber(income[key][0][2] ?? 0)}</td>
+                <td  class="cell">${formatNumber(income[key][0][3] ?? 0)}</td>
+                <td  class="cell">${formatNumber(income[key][0][4] ?? 0)}</td>
+                <td  class="cell">${formatNumber(income[key][0][5] ?? 0)}</td>
+                <td  class="cell">${formatNumber(income[key][0][6] ?? 0)}</td>
+                <td class="cell">${formatNumber(income[key][0][7] ?? 0)}</td>
+            </tr>
+        `;
+    }
+
+    html += `
+            <tr>
+                <td class="table-fields__name cell__total">${
+                  income[lastElemKeys][1]
+                }</td>
+                <td  class="cell cell__total ${getNegativeClass(
+                  income[lastElemKeys][0][0]
+                )}"> ${formatNumber(income[lastElemKeys][0][0] ?? 0)}</td>
+                <td  class="cell cell__total ${getNegativeClass(
+                  income[lastElemKeys][0][1]
+                )}">${formatNumber(income[lastElemKeys][0][1] ?? 0)}</td>
+                <td  class="cell cell__total ${getNegativeClass(
+                  income[lastElemKeys][0][2]
+                )}">${formatNumber(income[lastElemKeys][0][2] ?? 0)}</td>
+                <td  class="cell cell__total ${getNegativeClass(
+                  income[lastElemKeys][0][3]
+                )}">${formatNumber(income[lastElemKeys][0][3] ?? 0)}</td>
+                <td  class="cell cell__total ${getNegativeClass(
+                  income[lastElemKeys][0][4]
+                )}">${formatNumber(income[lastElemKeys][0][4] ?? 0)}</td>
+                <td  class="cell cell__total ${getNegativeClass(
+                  income[lastElemKeys][0][5]
+                )}">${formatNumber(income[lastElemKeys][0][5] ?? 0)}</td>
+                <td  class="cell cell__total ${getNegativeClass(
+                  income[lastElemKeys][0][6]
+                )}">${formatNumber(income[lastElemKeys][0][6] ?? 0)}</td>
+                <td class="cell cell__total ${getNegativeClass(
+                  income[lastElemKeys][0][7]
+                )}">${formatNumber(income[lastElemKeys][0][7] ?? 0)}</td>
+            </tr>
+        `;
+  }
+
+  // Добавляем Итоговую строку
+  html += `
+              <tr>
+                  <td class="table-fields__name cell__total">${ccf["ccf"][1]}</td>`;
+
+  // Создаем ячейки в цикле
+  for (let i = 0; i < 8; i++) {
+    const value = ccf["ccf"][0][i] ?? 0;
+    const negativeClass = value < 0 ? "red" : "";
+    html += `<td class="cell cell__total ${negativeClass}">${formatNumber(
+      value
+    )}</td>`;
+  }
+
+  html += `
+              </tr>
+          </tbody>
+          </table>`;
 
   return html;
 }

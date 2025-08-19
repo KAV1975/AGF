@@ -152,8 +152,7 @@ textarea {
  * 1. Show the overflow in Edge.
  */
 button,
-input {
-  /* 1 */
+input { /* 1 */
   overflow: visible;
 }
 
@@ -162,8 +161,7 @@ input {
  * 1. Remove the inheritance of text transform in Firefox.
  */
 button,
-select {
-  /* 1 */
+select { /* 1 */
   text-transform: none;
 }
 
@@ -171,9 +169,9 @@ select {
  * Correct the inability to style clickable types in iOS and Safari.
  */
 button,
-[type="button"],
-[type="reset"],
-[type="submit"] {
+[type=button],
+[type=reset],
+[type=submit] {
   -webkit-appearance: button;
 }
 
@@ -181,9 +179,9 @@ button,
  * Remove the inner border and padding in Firefox.
  */
 button::-moz-focus-inner,
-[type="button"]::-moz-focus-inner,
-[type="reset"]::-moz-focus-inner,
-[type="submit"]::-moz-focus-inner {
+[type=button]::-moz-focus-inner,
+[type=reset]::-moz-focus-inner,
+[type=submit]::-moz-focus-inner {
   border-style: none;
   padding: 0;
 }
@@ -192,9 +190,9 @@ button::-moz-focus-inner,
  * Restore the focus styles unset by the previous rule.
  */
 button:-moz-focusring,
-[type="button"]:-moz-focusring,
-[type="reset"]:-moz-focusring,
-[type="submit"]:-moz-focusring {
+[type=button]:-moz-focusring,
+[type=reset]:-moz-focusring,
+[type=submit]:-moz-focusring {
   outline: 1px dotted ButtonText;
 }
 
@@ -238,8 +236,8 @@ textarea {
  * 1. Add the correct box sizing in IE 10.
  * 2. Remove the padding in IE 10.
  */
-[type="checkbox"],
-[type="radio"] {
+[type=checkbox],
+[type=radio] {
   box-sizing: border-box; /* 1 */
   padding: 0; /* 2 */
 }
@@ -247,8 +245,8 @@ textarea {
 /**
  * Correct the cursor style of increment and decrement buttons in Chrome.
  */
-[type="number"]::-webkit-inner-spin-button,
-[type="number"]::-webkit-outer-spin-button {
+[type=number]::-webkit-inner-spin-button,
+[type=number]::-webkit-outer-spin-button {
   height: auto;
 }
 
@@ -256,7 +254,7 @@ textarea {
  * 1. Correct the odd appearance in Chrome and Safari.
  * 2. Correct the outline style in Safari.
  */
-[type="search"] {
+[type=search] {
   -webkit-appearance: textfield; /* 1 */
   outline-offset: -2px; /* 2 */
 }
@@ -264,7 +262,7 @@ textarea {
 /**
  * Remove the inner padding in Chrome and Safari on macOS.
  */
-[type="search"]::-webkit-search-decoration {
+[type=search]::-webkit-search-decoration {
   -webkit-appearance: none;
 }
 
@@ -309,87 +307,19 @@ template {
   display: none;
 }
 
-html,
-body,
-div,
-span,
-applet,
-object,
-iframe,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6,
-p,
-blockquote,
-pre,
-a,
-abbr,
-acronym,
-address,
-big,
-cite,
-code,
-del,
-dfn,
-em,
-img,
-ins,
-kbd,
-q,
-s,
-samp,
-small,
-strike,
-strong,
-sub,
-sup,
-tt,
-var,
-b,
-u,
-i,
-center,
-dl,
-dt,
-dd,
-ol,
-ul,
-li,
-fieldset,
-form,
-label,
-legend,
-table,
-caption,
-tbody,
-tfoot,
-thead,
-tr,
-th,
-td,
-article,
-aside,
-canvas,
-details,
-embed,
-figure,
-figcaption,
-footer,
-header,
-hgroup,
-menu,
-nav,
-output,
-ruby,
-section,
-summary,
-time,
-mark,
-audio,
-video {
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
   margin: 0;
   padding: 0;
   border: 0;
@@ -398,17 +328,8 @@ video {
   vertical-align: baseline;
 }
 
-article,
-aside,
-details,
-figcaption,
-figure,
-footer,
-header,
-hgroup,
-menu,
-nav,
-section {
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
   display: block;
 }
 
@@ -420,20 +341,16 @@ body {
   line-height: 1;
 }
 
-ol,
-ul {
+ol, ul {
   list-style: none;
 }
 
-blockquote,
-q {
+blockquote, q {
   quotes: none;
 }
 
-blockquote:before,
-blockquote:after,
-q:before,
-q:after {
+blockquote:before, blockquote:after,
+q:before, q:after {
   content: "";
   content: none;
 }
@@ -457,8 +374,7 @@ table {
   .top-section {
     flex-direction: column;
   }
-  .top-section .container-left,
-  .top-section .container-right {
+  .top-section .container-left, .top-section .container-right {
     min-width: 100%;
   }
 }
@@ -528,12 +444,10 @@ canvas .chart_:first-child {
   height: 95%;
   border-collapse: collapse;
 }
-#invest th:nth-child(1),
-#invest #invest td:nth-child(1) {
+#invest th:nth-child(1), #invest #invest td:nth-child(1) {
   width: 60%;
 }
-#invest th:nth-child(2),
-#invest #invest td:nth-child(2) {
+#invest th:nth-child(2), #invest #invest td:nth-child(2) {
   width: 40%;
   text-align: right;
 }
@@ -562,6 +476,19 @@ td .table-fields__name {
 }
 td .cell {
   width: 10%;
+  text-align: right;
+  vertical-align: middle;
+}
+td .cell__total {
+  width: 10%;
+  vertical-align: middle;
+  font-weight: bold;
+}
+td .cell__total-effectiveness {
+  width: 10%;
+  vertical-align: middle;
+  font-weight: bold;
+  font-style: italic;
 }
 
 .cell-foot {
@@ -575,6 +502,28 @@ th {
   vertical-align: middle;
   font-weight: bold;
   padding: 8px;
+}
+th .table-fields__name {
+  width: 20%;
+  text-align: left;
+  vertical-align: middle;
+}
+th .cell {
+  width: 10%;
+  text-align: right;
+  vertical-align: middle;
+}
+th .cell__total {
+  width: 10%;
+  text-align: right;
+  vertical-align: middle;
+  font-weight: bold;
+}
+th .cell__total-effectiveness {
+  width: 10%;
+  vertical-align: middle;
+  font-weight: bold;
+  font-style: italic;
 }
 
 tr .table-fields__name {
@@ -625,8 +574,7 @@ input {
   width: 20%;
 }
 
-#number5,
-#number4 {
+#number5, #number4 {
   width: 15%;
   width: 15%;
 }
@@ -653,7 +601,7 @@ span #out2 {
   border: 2px solid #000000;
   width: 60%;
   background-color: #000000;
-  color: #ffffff;
+  color: #FFFFFF;
   font-size: 1.5rem;
   font-family: inherit;
   font-weight: bold;
@@ -663,7 +611,7 @@ span #out2 {
 }
 
 .red {
-  color: #ff0000;
+  color: #FF0000;
 }
 
 .black {
@@ -675,13 +623,13 @@ span #out2 {
   position: relative;
   margin-left: 0%;
   top: 100%;
-  color: #ff0000;
+  color: #FF0000;
   font-weight: bold;
   font-style: italic;
 }
 
 .error {
-  border: 2px solid #ff0000;
+  border: 2px solid #FF0000;
 }
 
 .show {
