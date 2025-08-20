@@ -47,26 +47,40 @@
             <input inputmode="decimal"  type="number" name="Процентная ставка" min="0" max="1"  step="0.01" id="number5" placeholder="от 0.00">  
           </div>
         </div>
+      </div>
 
-
-        <div class="out">
+<!-- вывод общей инфо после ВВОДА данных-->
+<div class="container-right">
+         <div class="out">
           <div>
             <button class="btn ">РАССЧИТАТЬ*</button>
           </div>
           <div class="out-area">
-            <p>ИНВЕСТИЦИИ <span id="out1">0</span>   руб</p> 
+            <p>СУММА ИНВЕСТИЦИЙ <span id="out1">0</span>   руб</p> 
           </div>
 
           <div class="out-area">
-            <p>Рентабельность инвестиций <span id="out2">0</span></p> 
+            <p>Рентабельность инвестиций (ROI) <span id="out2">0</span></p> 
           </div>
 
           <div class="out-area">
-            <p>Рентабельность продаж <span id="out3">0</span></p> 
+            <p>СОБСТВЕННЫЙ КАПИТАЛ <span id="out6">0</span>   руб</p> 
+          </div>
+
+          <div class="out-area">
+            <p>Рентабельность капитала (ROE) <span id="out3">0</span></p> 
           </div>
 
           <div class="out-area">
             <p>Срок окупаемости <span id="out4">0</span></p> 
+          </div>
+
+          <div class="out-area">
+            <p>Прирост денежных средств за 7 лет <span id="out7">0</span>   руб</p> 
+          </div>
+
+          <div class="out-area">
+            <p>Кассовый разрыв <span id="out8">0</span></p> 
           </div>
 
           <!-- При необходимости раскоментируем-->
@@ -76,11 +90,6 @@
 
          </div>
 
-      </div>
-
-<!-- График справа сверху-->
-<div class="container-right">
- <canvas class = "chart_" id="myChart" ></canvas>
 </div>
 </section>
 
@@ -113,6 +122,17 @@
         </tr>
         <tr>
           <td class="table-fields__name">ОПЕРАЦИОННЫЕ РАСХОДЫ</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+          <td class="cell">0</td>
+        </tr>
+        <tr>
+          <td class="table-fields__name">Амортизация</td>
           <td class="cell">0</td>
           <td class="cell">0</td>
           <td class="cell">0</td>
@@ -188,6 +208,12 @@
           <td class="cell cell__total-effectiveness">0.00</td>
           <td class="cell cell__total-effectiveness">0.00</td>
         </tr>
+
+        <tr id="empty-row-spacer">
+          <td colspan="9"> </td>
+        </tr>
+
+
         <tr>
           <td class="table-fields__name cell__total-effectiveness">Рентабельность инвестиций</td>
           <td class="cell cell__total-effectiveness">0.00</td>
@@ -200,10 +226,29 @@
           <td class="cell cell__total-effectiveness">0.00</td>
         </tr>
         <tr>
-          <td colspan="9">
-              
-          </td>
+          <td class="table-fields__name cell__total-effectiveness">Рентабельность капитала</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
         </tr>
+
+        <tr>
+          <td class="table-fields__name cell__total-effectiveness">Ставка по депозиту</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+          <td class="cell cell__total-effectiveness">0.00</td>
+        </tr>
+
         <tr>
           <td class="table-fields__name">Предполагаемый доход от Бизнеса</td>
           <td class="cell">0</td>
@@ -226,7 +271,7 @@
           <td class="cell">0</td>
           <td class="cell">0</td>
         </tr>
-        <tr>
+        <tr id="last-row">
           <td class="table-fields__name cell__total-effectiveness">Ключевая ставка</td>
           <td class="cell cell__total-effectiveness">0.00</td>
         </tr>
@@ -279,21 +324,14 @@
 
 <div class="container-right">
   <canvas class = "chart_" id="myChart1" ></canvas>
-      <div class="text-block">
-НАПИСАТЬ  ТЕКСТ ПОЯСНЕНИЯ К ГРАФИКУ И ТАБЛИЦЫ ИНВЕСТИЦИЙ!!!!
-    </div>
+  <canvas class = "chart_" id="myChart" ></canvas>
 </div>
 </section>
 
 
 
-
-
 <section class="top-section">
-<div class="table-container" id="cashFlow">
-    
-
-    </div>
+<div class="table-container" id="cashFlow"></div>
 </section>
 
 

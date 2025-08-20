@@ -8,6 +8,23 @@ let square -плошадь Помещения вводимое значение.
 let keyRate -Ключевая ставка. Впринципе можно брать с внешнего источника. Если ввод. Важно: при вводе учитывать % или число!. ПРИ ВВОДЕ НАПИСАТЬ ПРОВЕРКУ НА >= 0 И ЧИСЛОВОЙ ТИП
   */
 
+//Вспомагательные функции
+
+// Формула округления с определенной кратностью вниз
+const roundingWithMultiplicityFloor = function (num, mult) {
+  return Math.floor(num / mult) * mult;
+};
+
+// Формула округления с определенной кратностью ввверх
+const roundingWithMultiplicityCeil = function (num, mult) {
+  return Math.ceil(num / mult) * mult;
+};
+
+// Формула округления с определенной кратностью
+const roundingWithMultiplicity = function (num, mult) {
+  return Math.round(num / mult) * mult;
+};
+
 //ЗАДАЕМ ГРАНИЦЫ ДОПУСТИМЫХ ПЛОЩАДЕЙ И КЛЮЧЕВУЮ СТАВКУ (в перпективе брать в WEB)
 const left_ = 700;
 const right_ = 2500;
@@ -79,23 +96,6 @@ function modelAGF(
   // ТЕХНИЧЕСКИЕ ОБЪЕКТЫ, ДЛЯ ПОДСТАНОВКИ ПО УСЛОВИЮ
   const techObject1 = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }; // технически для подстановки, если Площадь не введена или равна 0. Где целые
   const techObject2 = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 }; // технически для подстановки, если Площадь не введена или равна 0. Где дробные
-
-  //ФУНКЦИИ
-
-  // Формула округления с определенной кратностью вниз
-  const roundingWithMultiplicityFloor = function (num, mult) {
-    return Math.floor(num / mult) * mult;
-  };
-
-  // Формула округления с определенной кратностью ввверх
-  const roundingWithMultiplicityCeil = function (num, mult) {
-    return Math.ceil(num / mult) * mult;
-  };
-
-  // Формула округления с определенной кратностью
-  const roundingWithMultiplicity = function (num, mult) {
-    return Math.round(num / mult) * mult;
-  };
 
   //Коэффициент количества продаж от площади. Аргумент = площадь помещения
   function salesRatio(square) {
@@ -969,9 +969,10 @@ function modelAGF(
   );
 
   //сравнение и выбор
-
+  let flagTaxes = false; // флаг для выбранного варианта УСН, используем далее при расчете NOPAT
   if (optionTaxes_6 <= optionTaxes_15) {
     Object.assign(taxesMonth, taxes_6);
+    flagTaxes = true; // если Д*6% выгоднее
   } else {
     Object.assign(taxesMonth, taxes_15);
   }
@@ -1023,11 +1024,13 @@ function modelAGF(
   //Кассовый разрыв
   let cashGap = "НЕТ",
     cashGapNumberMonth = "НЕТ";
-  for (let i = 1; i <= 84; i++) {
-    if (ccfMonth[i] < 0) {
-      cashGap = ccfMonth[i];
-      cashGapNumberMonth = i;
-      break;
+  if (flag) {
+    for (let i = 1; i <= 84; i++) {
+      if (ccfMonth[i] < 0) {
+        cashGap = Math.round(ccfMonth[i]);
+        cashGapNumberMonth = i;
+        break;
+      }
     }
   }
 
@@ -1092,10 +1095,28 @@ function modelAGF(
     );
   }
 
+  // Амортизация. Срок использования 7 лет.
+  //Амортизация по годам
+  const depreciationYear = {};
+  for (let i = 1; i <= 7; i++) {
+    depreciationYear[i] =
+      sumInvestments >= 0
+        ? roundingWithMultiplicity(sumInvestments / 7, 10 ** 1)
+        : 0;
+  }
+
+  //Сумма Амортизации за 7 лет
+  const sumDepreciation = roundingWithMultiplicity(
+    Object.values(depreciationYear).reduce((accumulator, value) => {
+      return accumulator + value;
+    }, 0),
+    10 ** 1
+  );
+
   //Валовая прибыль
   const grossProfit = {};
   for (let i = 1; i <= 7; i++) {
-    grossProfit[i] = earnings[i] - operatingExpenses[i];
+    grossProfit[i] = earnings[i] - operatingExpenses[i] - depreciationYear[i];
   }
 
   //Рентабельность по Валовой прибыли
@@ -1133,19 +1154,48 @@ function modelAGF(
   }
 
   // Ренатбальность инвестиций
+  //NOPAT для расчет Рентабельности инвестиций. NOPAT Прибыль до уплаты % и налоогов и налог расчитывается "как бы без учета %"
+  const NOPATYear = {};
+  for (let i = 1; i <= 7; i++) {
+    if (flagTaxes) {
+      NOPATYear[i] = grossProfit[i] - earningsYear[i] * 0.06;
+    } else {
+      NOPATYear[i] = grossProfit[i] * (1 - 0.15);
+    }
+  }
 
-  //Средняя рентабельность инвестиций по периоду 7 лет
+  //Средняя рентабельность инвестиций по периоду 7 лет,  По методологии NOPAT
   const meanProfitabilityI =
-    Object.values(netProfit).reduce((accumulator, value) => {
+    Object.values(NOPATYear).reduce((accumulator, value) => {
       return accumulator + value;
     }, 0) /
     sumInvestments /
     7;
 
-  // Рентабельность инвестиций по годам
+  // Рентабельность инвестиций по годам,  По методологии NOPAT
   const profitabilityI = {};
   for (let i = 1; i <= 7; i++) {
-    profitabilityI[i] = netProfit[i] / sumInvestments;
+    profitabilityI[i] = NOPATYear[i] / sumInvestments;
+  }
+
+  // Ренатбальность Собственного капитала
+  const OwnerContribution =
+    loanAmount < sumInvestments ? sumInvestments - loanAmount : 0; //Взнос Собственника
+
+  //Средняя рентабельность Собственного капитала по периоду 7 лет
+  const meanROE =
+    OwnerContribution > 0
+      ? Object.values(netProfit).reduce((accumulator, value) => {
+          return accumulator + value;
+        }, 0) /
+        OwnerContribution /
+        7
+      : 0;
+
+  // Рентабельность Собственного капитала по годам
+  const ROEYear = {};
+  for (let i = 1; i <= 7; i++) {
+    ROEYear[i] = OwnerContribution > 0 ? netProfit[i] / OwnerContribution : 0;
   }
 
   //Выручка за весь период
@@ -1162,7 +1212,7 @@ function modelAGF(
   );
 
   // Валовая прибыль и рентабельность ао ВП за весь период
-  const sumGrossProfit = sumEarnings - sumOperatingExpenses;
+  const sumGrossProfit = sumEarnings - sumOperatingExpenses - sumDepreciation;
   const meanProfitabilityGP = sumGrossProfit / sumEarnings;
 
   // Проценты и налоги за весь период
@@ -1178,11 +1228,16 @@ function modelAGF(
   const sumNetProfit = sumGrossProfit - sumInterest - sumTaxes;
   const meanProfitabilityNT = sumNetProfit / sumEarnings;
 
-  //Расчет депозита на сумму Инвестиций для сравнения
+  //Расчет депозита на сумму Собственных средств для сравнения
   const interestDeposit = keyRate - 0.02; //Проценты по депозиту = ключевая ставка минус 2 пп
+  const interestDepositYear = {};
+  for (let i = 1; i <= 7; i++) {
+    interestDepositYear[i] = interestDeposit ?? 0;
+  }
+
   const depositMonth = {};
   for (let i = 1; i <= 84; i++) {
-    depositMonth[i] = interestMonth(sumInvestments, interestDeposit, i);
+    depositMonth[i] = interestMonth(OwnerContribution, interestDeposit, i);
   }
 
   const depositYear = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0, 6: 0, 7: 0 };
@@ -1323,8 +1378,6 @@ function modelAGF(
   }
 
   // ФИНАНСОВЫЙ БЛОК ДЛЯ ДДС
-  const OwnerContribution =
-    loanAmount < sumInvestments ? sumInvestments - loanAmount : 0; //Взнос Собственника
 
   const credit = {
     ownerIn: [
@@ -1400,6 +1453,7 @@ function modelAGF(
     paybackPeriodYear: flag ? paybackPeriodYear : 0.0,
     discountedPaybackPeriod: flag ? discountedPaybackPeriod : 0.0,
     meanProfitabilityI: flag ? meanProfitabilityI : 0.0,
+    meanROE: flag ? meanROE : 0.0,
     meanProfitabilityNT: flag ? meanProfitabilityNT : 0.0,
     earnings: flag ? earnings : techObject1,
     operatingExpenses: flag ? operatingExpenses : techObject1,
@@ -1410,6 +1464,7 @@ function modelAGF(
     netProfit: flag ? netProfit : techObject1,
     profitabilityNP: flag ? profitabilityNP : techObject2,
     profitabilityI: flag ? profitabilityI : techObject2,
+    ROEYear: flag ? ROEYear : techObject2,
     sumEarnings: flag ? sumEarnings : 0,
     sumOperatingExpenses: flag ? sumOperatingExpenses : 0,
     sumGrossProfit: flag ? sumGrossProfit : 0,
@@ -1428,6 +1483,11 @@ function modelAGF(
     inv: inv, //ЧДП от инвестиционной деятельности, с названиями статей
     cf: cf, //ЧДП, с названиями статей
     ccf: ccf, //Накопленный денежный поток
+    depreciationYear: depreciationYear, //Амортизация по годам
+    sumDepreciation: sumDepreciation, //Сумма Амортизации
+    interestDepositYear: interestDepositYear, // Ставка по депозиту
+    OwnerContribution: OwnerContribution, // Соственные средства
+    cashGap: cashGap, // Сумма кассового разрыва, если есть, если нет -> "НЕТ"
   };
   return modelIndicators;
 }
@@ -1957,10 +2017,16 @@ function calculate() {
     document.querySelector("#out2").className = "red";
   }
 
-  // Выводим среднюю рентабельность продаж за 7 лет
-  if (model["meanProfitabilityNT"] >= 0) {
+  // Выводим сумму Собственных средств
+  document.querySelector("#out6").innerText = roundingWithMultiplicity(
+    model["OwnerContribution"],
+    10 ** 2
+  ).toLocaleString("ru-RU");
+
+  // Выводим среднюю рентабельность капитала за 7 лет
+  if (model["meanROE"] >= 0) {
     document.querySelector("#out3").innerText = `${(
-      model["meanProfitabilityNT"] * 100
+      model["meanROE"] * 100
     ).toFixed(2)} %`;
     document.querySelector("#out3").className = "black";
   } else {
@@ -1980,6 +2046,25 @@ function calculate() {
     document.querySelector("#out4").className = "black";
   }
 
+  // Выводим Прирост денежных средств
+  document.querySelector("#out7").innerText = roundingWithMultiplicity(
+    model["ccf"].ccf[0][7],
+    10 ** 3
+  ).toLocaleString("ru-RU");
+
+  // // Выводим наличие кассового разрыва
+  if (model["cashGap"] < 0) {
+    document.querySelector("#out8").innerText = `${roundingWithMultiplicity(
+      model["cashGap"],
+      10 ** 2
+    ).toLocaleString("ru-RU")}  руб`;
+    document.querySelector("#out8").className = "red";
+  } else {
+    document.querySelector("#out8").innerText = model["cashGap"];
+    // document.querySelector("#out8").classList.remove("red");
+    document.querySelector("#out8").className = "black";
+  }
+
   // Выводим период окупаемости дисконтированный
   // if (model["discountedPaybackPeriod"] == "В течение 7-ми лет не окупается") {
   //   document.querySelector("#out5").innerText =
@@ -1994,39 +2079,50 @@ function calculate() {
 
   //Заполнение Таблицы ПиУ (ps: название на сайте "Прогноз финансовых результатов и анализ рентабельности на 7 лет")
 
+  const emtyRow = getRowIndexInTbody("empty-row-spacer") + 1; //получаем индекс пустой строки
+  const lastRow = getRowIndexInTbody("last-row") + 1; //получаем индекс последней строки
+
   const valueForTablePAL = {
     1: model["earnings"],
     2: model["operatingExpenses"],
-    3: model["grossProfit"],
-    4: model["profitabilityGP"],
-    5: model["interest"],
-    6: model["taxes"],
-    7: model["netProfit"],
-    8: model["profitabilityNP"],
-    9: model["profitabilityI"],
-    11: model["depositYear"],
+    3: model["depreciationYear"],
+    4: model["grossProfit"],
+    5: model["profitabilityGP"],
+    6: model["interest"],
+    7: model["taxes"],
+    8: model["netProfit"],
+    9: model["profitabilityNP"],
+    11: model["profitabilityI"],
+    12: model["ROEYear"],
+    13: model["interestDepositYear"],
+    14: model["netProfit"],
+    15: model["depositYear"],
   };
 
   valueForTablePAL[1][0] = model["sumEarnings"];
   valueForTablePAL[2][0] = model["sumOperatingExpenses"];
-  valueForTablePAL[3][0] = model["sumGrossProfit"];
-  valueForTablePAL[4][0] = model["meanProfitabilityGP"];
-  valueForTablePAL[5][0] = model["sumInterest"];
-  valueForTablePAL[6][0] = model["sumTaxes"];
-  valueForTablePAL[7][0] = model["sumNetProfit"];
-  valueForTablePAL[8][0] = model["meanProfitabilityNT"];
-  valueForTablePAL[9][0] = model["meanProfitabilityI"];
-  valueForTablePAL[11][0] = model["sumDeposit"];
+  valueForTablePAL[3][0] = model["sumDepreciation"];
+  valueForTablePAL[4][0] = model["sumGrossProfit"];
+  valueForTablePAL[5][0] = model["meanProfitabilityGP"];
+  valueForTablePAL[6][0] = model["sumInterest"];
+  valueForTablePAL[7][0] = model["sumTaxes"];
+  valueForTablePAL[8][0] = model["sumNetProfit"];
+  valueForTablePAL[9][0] = model["meanProfitabilityNT"];
+  valueForTablePAL[11][0] = model["meanProfitabilityI"];
+  valueForTablePAL[12][0] = model["meanROE"];
+  valueForTablePAL[13][0] = model["interestDepositYear"][1];
+  valueForTablePAL[14][0] = model["sumNetProfit"];
+  valueForTablePAL[15][0] = model["sumDeposit"];
 
   let Table1 = document.getElementById("ProfitAndLoss");
 
-  for (let i = 1; i <= 9; i++) {
+  for (let i = 1; i < emtyRow; i++) {
     for (let j = 1; j <= 8; j++) {
-      if (i == 4 || i == 8 || i == 9) {
+      if (i == 5 || i == emtyRow - 1) {
         if (valueForTablePAL[i][j - 1] >= 0) {
-          Table1.rows.item(i).cells[j].innerText = `${(
+          Table1.rows.item(i).cells[j].innerText = `${Math.round(
             valueForTablePAL[i][j - 1] * 100
-          ).toFixed(2)} %`;
+          )} %`; //.toFixed(0)
           Table1.rows.item(i).cells[j].classList.remove("red");
         } else {
           Table1.rows.item(i).cells[j].innerText = "убыток";
@@ -2044,20 +2140,43 @@ function calculate() {
     }
   }
 
-  for (let i = 1; i <= 8; i++) {
-    Table1.rows.item(11).cells[i].innerText =
-      valueForTablePAL[7][i - 1].toLocaleString("ru-RU");
-    Table1.rows.item(12).cells[i].innerText = Math.round(
-      valueForTablePAL[11][i - 1]
-    ).toLocaleString("ru-RU");
-    if (valueForTablePAL[7][i - 1] < 0) {
-      Table1.rows.item(11).cells[i].classList.add("red");
-    } else {
-      Table1.rows.item(11).cells[i].classList.remove("red");
+  for (let i = emtyRow + 1; i < lastRow; i++) {
+    for (let j = 1; j <= 8; j++) {
+      if (i == emtyRow + 1 || i == emtyRow + 2 || i == emtyRow + 3) {
+        if (valueForTablePAL[i][j - 1] >= 0) {
+          Table1.rows.item(i).cells[j].innerText = `${Math.round(
+            valueForTablePAL[i][j - 1] * 100
+          )} %`; //.toFixed(0)
+          Table1.rows.item(i).cells[j].classList.remove("red");
+        } else {
+          Table1.rows.item(i).cells[j].innerText = "убыток";
+          Table1.rows.item(i).cells[j].classList.add("red");
+        }
+      } else {
+        Table1.rows.item(i).cells[j].innerText = Math.round(
+          valueForTablePAL[i][j - 1]
+        ).toLocaleString("ru-RU");
+        if (valueForTablePAL[i][j - 1] < 0) {
+          Table1.rows.item(i).cells[j].classList.add("red");
+        } else {
+          Table1.rows.item(i).cells[j].classList.remove("red");
+        }
+      }
+
+      // Table1.rows.item(14).cells[i].innerText =
+      //   valueForTablePAL[8][i - 1].toLocaleString("ru-RU");
+      // Table1.rows.item(15).cells[i].innerText = roundingWithMultiplicity(
+      //   valueForTablePAL[13][i - 1],
+      //   10 ** 5
+      // ).toLocaleString("ru-RU");
+      // if (valueForTablePAL[8][i - 1] < 0) {
+      //   Table1.rows.item(15).cells[i].classList.add("red");
+      // } else {
+      //   Table1.rows.item(15).cells[i].classList.remove("red");
+      // }
     }
   }
-
-  Table1.rows.item(13).cells[1].innerText = `${model["keyRate"] * 100} %`;
+  Table1.rows.item(lastRow).cells[1].innerText = `${model["keyRate"] * 100} %`;
 
   updateChart(myChart, Object.values(model["ccfWithInvestYear"])); // Обновляем График Окупаемости
 
@@ -2270,7 +2389,7 @@ function createCashFlowTable(ccf, ...incomeElems) {
             <tbody>
     `;
 
-  // Добавляем строки для каждой статьи
+  // Добавляем строки для каждой статьи roundingWithMultiplicity(num, mult)
 
   for (let income of incomeElems) {
     const keys = Object.keys(income);
@@ -2282,14 +2401,30 @@ function createCashFlowTable(ccf, ...incomeElems) {
       html += `
             <tr>
                 <td class="table-fields__name ">${income[key][1]}</td>
-                <td  class="cell">${formatNumber(income[key][0][0] ?? 0)}</td>
-                <td  class="cell">${formatNumber(income[key][0][1] ?? 0)}</td>
-                <td  class="cell">${formatNumber(income[key][0][2] ?? 0)}</td>
-                <td  class="cell">${formatNumber(income[key][0][3] ?? 0)}</td>
-                <td  class="cell">${formatNumber(income[key][0][4] ?? 0)}</td>
-                <td  class="cell">${formatNumber(income[key][0][5] ?? 0)}</td>
-                <td  class="cell">${formatNumber(income[key][0][6] ?? 0)}</td>
-                <td class="cell">${formatNumber(income[key][0][7] ?? 0)}</td>
+                <td  class="cell">${formatNumber(
+                  roundingWithMultiplicity(income[key][0][0], 10 ** 2) ?? 0
+                )}</td>
+                <td  class="cell">${formatNumber(
+                  roundingWithMultiplicity(income[key][0][1], 10 ** 2) ?? 0
+                )}</td>
+                <td  class="cell">${formatNumber(
+                  roundingWithMultiplicity(income[key][0][2], 10 ** 2) ?? 0
+                )}</td>
+                <td  class="cell">${formatNumber(
+                  roundingWithMultiplicity(income[key][0][3], 10 ** 2) ?? 0
+                )}</td>
+                <td  class="cell">${formatNumber(
+                  roundingWithMultiplicity(income[key][0][4], 10 ** 2) ?? 0
+                )}</td>
+                <td  class="cell">${formatNumber(
+                  roundingWithMultiplicity(income[key][0][5], 10 ** 2) ?? 0
+                )}</td>
+                <td  class="cell">${formatNumber(
+                  roundingWithMultiplicity(income[key][0][6], 10 ** 2) ?? 0
+                )}</td>
+                <td class="cell">${formatNumber(
+                  roundingWithMultiplicity(income[key][0][7], 10 ** 2) ?? 0
+                )}</td>
             </tr>
         `;
     }
@@ -2301,28 +2436,44 @@ function createCashFlowTable(ccf, ...incomeElems) {
                 }</td>
                 <td  class="cell cell__total ${getNegativeClass(
                   income[lastElemKeys][0][0]
-                )}"> ${formatNumber(income[lastElemKeys][0][0] ?? 0)}</td>
+                )}"> ${formatNumber(
+      roundingWithMultiplicity(income[lastElemKeys][0][0], 10 ** 4) ?? 0
+    )}</td>
                 <td  class="cell cell__total ${getNegativeClass(
                   income[lastElemKeys][0][1]
-                )}">${formatNumber(income[lastElemKeys][0][1] ?? 0)}</td>
+                )}">${formatNumber(
+      roundingWithMultiplicity(income[lastElemKeys][0][1], 10 ** 5) ?? 0
+    )}</td>
                 <td  class="cell cell__total ${getNegativeClass(
                   income[lastElemKeys][0][2]
-                )}">${formatNumber(income[lastElemKeys][0][2] ?? 0)}</td>
+                )}">${formatNumber(
+      roundingWithMultiplicity(income[lastElemKeys][0][2], 10 ** 5) ?? 0
+    )}</td>
                 <td  class="cell cell__total ${getNegativeClass(
                   income[lastElemKeys][0][3]
-                )}">${formatNumber(income[lastElemKeys][0][3] ?? 0)}</td>
+                )}">${formatNumber(
+      roundingWithMultiplicity(income[lastElemKeys][0][3], 10 ** 5) ?? 0
+    )}</td>
                 <td  class="cell cell__total ${getNegativeClass(
                   income[lastElemKeys][0][4]
-                )}">${formatNumber(income[lastElemKeys][0][4] ?? 0)}</td>
+                )}">${formatNumber(
+      roundingWithMultiplicity(income[lastElemKeys][0][4], 10 ** 5) ?? 0
+    )}</td>
                 <td  class="cell cell__total ${getNegativeClass(
                   income[lastElemKeys][0][5]
-                )}">${formatNumber(income[lastElemKeys][0][5] ?? 0)}</td>
+                )}">${formatNumber(
+      roundingWithMultiplicity(income[lastElemKeys][0][5], 10 ** 5) ?? 0
+    )}</td>
                 <td  class="cell cell__total ${getNegativeClass(
                   income[lastElemKeys][0][6]
-                )}">${formatNumber(income[lastElemKeys][0][6] ?? 0)}</td>
+                )}">${formatNumber(
+      roundingWithMultiplicity(income[lastElemKeys][0][6], 10 ** 5) ?? 0
+    )}</td>
                 <td class="cell cell__total ${getNegativeClass(
                   income[lastElemKeys][0][7]
-                )}">${formatNumber(income[lastElemKeys][0][7] ?? 0)}</td>
+                )}">${formatNumber(
+      roundingWithMultiplicity(income[lastElemKeys][0][7], 10 ** 5) ?? 0
+    )}</td>
             </tr>
         `;
   }
@@ -2337,7 +2488,7 @@ function createCashFlowTable(ccf, ...incomeElems) {
     const value = ccf["ccf"][0][i] ?? 0;
     const negativeClass = value < 0 ? "red" : "";
     html += `<td class="cell cell__total ${negativeClass}">${formatNumber(
-      value
+      roundingWithMultiplicity(value, 10 ** 3)
     )}</td>`;
   }
 
@@ -2347,4 +2498,17 @@ function createCashFlowTable(ccf, ...incomeElems) {
           </table>`;
 
   return html;
+}
+
+// Поиск номера строки с заданной таблицы HTML. Нужно для Таблицы ПиУ (задолюался руками переделывать)))):
+
+function getRowIndexInTbody(rowId) {
+  const row = document.getElementById(rowId);
+  if (!row || !row.parentNode) return -1;
+
+  // Ищем ближайший tbody (на случай сложной структуры таблицы)
+  const tbody = row.closest("tbody");
+  const rows = tbody ? tbody.rows : row.parentNode.children;
+
+  return Array.from(rows).indexOf(row);
 }
