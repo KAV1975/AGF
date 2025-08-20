@@ -37,6 +37,7 @@ function modelAGF(
   loanAmount = 0,
   interestRate = 0,
   loanPeriod = 0,
+  checkbox = false, //Проверка галки для учета амортизации, по умолчанию не учитываем
   keyRate = keyRate_
 ) {
   const flag = square >= left_ && square <= right_ ? true : false; // Для условия проверки интервала Площади
@@ -1097,12 +1098,15 @@ function modelAGF(
 
   // Амортизация. Срок использования 7 лет.
   //Амортизация по годам
-  const depreciationYear = {};
-  for (let i = 1; i <= 7; i++) {
-    depreciationYear[i] =
-      sumInvestments >= 0
-        ? roundingWithMultiplicity(sumInvestments / 7, 10 ** 1)
-        : 0;
+
+  const depreciationYear = { ...techObject1 };
+  if (checkbox) {
+    for (let i = 1; i <= 7; i++) {
+      depreciationYear[i] =
+        sumInvestments >= 0
+          ? roundingWithMultiplicity(sumInvestments / 7, 10 ** 1)
+          : 0;
+    }
   }
 
   //Сумма Амортизации за 7 лет
@@ -1993,13 +1997,14 @@ function calculate() {
   const inputElement = document.getElementById("number3");
   const loanAmount = parseFloat(inputElement.dataset.rawValue || 0);
   // const loanAmount = Number(document.getElementById("number3").value);
-
+  const checkbox = document.getElementById("myCheckbox"); //получаем состояние галки по учету амортизации
   const model = modelAGF(
     square,
     rentalRate,
     loanAmount,
     interestRate,
-    loanPeriod
+    loanPeriod,
+    checkbox.checked
   );
 
   // Выводим сумму инвестиций
@@ -2196,45 +2201,65 @@ function calculate() {
     model["cf"]
   );
 
-  //Данные для графика Анализа инвестиций от площади (площадь перебераем [700;2500], остальные параметры заданы моделью)
+  //Данные для графика Анализа рентабельности  инвестиций от площади (площадь перебераем [700;2500], остальные параметры заданы моделью)
 
   const dataNew2 = {};
   const dataNew2_2 = {};
 
   for (let i = left_; i <= right_; i += 100) {
     dataNew2[i] =
-      (modelAGF(i, rentalRate, loanAmount, interestRate, loanPeriod)[
-        "sumNetProfit"
-      ] /
+      (modelAGF(
+        i,
+        rentalRate,
+        loanAmount,
+        interestRate,
+        loanPeriod,
+        checkbox.checked
+      )["sumNetProfit"] /
         7 /
-        modelAGF(i, rentalRate, loanAmount, interestRate, loanPeriod)[
-          "sumInvestments"
-        ]) *
+        modelAGF(
+          i,
+          rentalRate,
+          loanAmount,
+          interestRate,
+          loanPeriod,
+          checkbox.checked
+        )["sumInvestments"]) *
       100;
     dataNew2_2[i] = model["keyRate"] * 100;
   }
 
-  updateChart(myChart2, dataNew2, dataNew2_2); // Обновляем График Анализа эффективности инвестиций от площади
+  updateChart(myChart2, dataNew2, dataNew2_2); // Обновляем График Анализа рентабельности инвестиций от площади
 
-  //Данные для графика Анализа инвестиций от Арендной ставки (ставку перебераем [0;1200], остальные параметры заданы моделью)
+  //Данные для графика Анализа рентабельности инвестиций от Арендной ставки (ставку перебераем [0;1200], остальные параметры заданы моделью)
 
   const dataNew3 = {};
   const dataNew3_2 = {};
 
   for (let i = 0; i <= 1200; i += 50) {
     dataNew3[i] =
-      (modelAGF(square, i, loanAmount, interestRate, loanPeriod)[
-        "sumNetProfit"
-      ] /
+      (modelAGF(
+        square,
+        i,
+        loanAmount,
+        interestRate,
+        loanPeriod,
+        checkbox.checked
+      )["sumNetProfit"] /
         7 /
-        modelAGF(square, i, loanAmount, interestRate, loanPeriod)[
-          "sumInvestments"
-        ]) *
+        modelAGF(
+          square,
+          i,
+          loanAmount,
+          interestRate,
+          loanPeriod,
+          checkbox.checked
+        )["sumInvestments"]) *
       100;
     dataNew3_2[i] = model["keyRate"] * 100;
   }
 
-  updateChart(myChart3, dataNew3, dataNew3_2); // Обновляем График Анализа эффективности инвестиций от Арендной ставки
+  updateChart(myChart3, dataNew3, dataNew3_2); // Обновляем График Анализа рентабельности инвестиций от Арендной ставки
 
   //Данные для графика Выбора варианта налогообложения
 
@@ -2242,9 +2267,14 @@ function calculate() {
   const dataNew4_2 = {};
 
   for (let i = left_; i <= right_; i += 100) {
-    dataNew4[i] = modelAGF(i, rentalRate, loanAmount, interestRate, loanPeriod)[
-      "meanTaxes_6"
-    ];
+    dataNew4[i] = modelAGF(
+      i,
+      rentalRate,
+      loanAmount,
+      interestRate,
+      loanPeriod,
+      checkbox.checked
+    )["meanTaxes_6"];
     dataNew4_2[i] = modelAGF(
       i,
       rentalRate,
@@ -2512,3 +2542,10 @@ function getRowIndexInTbody(rowId) {
 
   return Array.from(rows).indexOf(row);
 }
+
+//
+// // Проверка состояния галки
+// function isCheckboxChecked() {
+//   return checkbox.checked;
+// }
+// const isChecked = getCheckboxStatus(); // возврат Булева значения по состоянию галки
