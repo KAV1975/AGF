@@ -71,8 +71,6 @@
 
 
 
-
-
 .table-container
     width: 100%
     height: 100%
@@ -270,11 +268,66 @@ span
     opacity: 1
 
 
-// @media (max-width: 768px) {
-//     .top-section {
-//         flex-direction: column
-//     }
-//     .container-left, .container-right {
-//         min-width: 100%
-//     }
-// }
+/* Стили для таблицы продаж */
+#salesTable
+    width: 100%
+    border-collapse: collapse
+    font-size: 12px
+    margin: 10px 0
+
+#salesTable caption
+    font-weight: bold
+    text-align: left
+    font-size: 14px
+    padding: 8px 0
+    margin-bottom: 5px
+
+#salesTable th
+    border: 1px solid #696969
+    padding: 6px 4px
+    text-align: center
+    vertical-align: middle
+    font-weight: bold
+    // background-color: #f0f0f0
+    font-size: 11px
+
+#salesTable td
+    border: 1px solid #696969
+    padding: 6px 4px
+    vertical-align: middle
+
+/* Первый столбец (Номер года) - по центру */
+#salesTable td:first-child
+    text-align: center
+
+/* Остальные столбцы - прижать вправо */
+#salesTable td:not(:first-child)
+    text-align: right
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px)
+    #salesTable
+        font-size: 10px
+    
+    #salesTable th,
+    #salesTable td
+        padding: 4px 2px
+    
+    #salesTable caption
+        font-size: 12px
+    
+    .table-container
+        overflow-x: auto
+        -webkit-overflow-scrolling: touch
+    
+    #salesTable
+        min-width: 600px
+
+@media (max-width: 480px)
+    #salesTable
+        font-size: 9px
+        min-width: 500px
+    
+    #salesTable th,
+    #salesTable td
+        padding: 3px 1px

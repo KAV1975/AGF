@@ -377,6 +377,57 @@ function modelAGF(
     earningsCardYear[Math.ceil(m / 12)] += earningsCardMonth[m];
   }
 
+  //-----------------------------------------------------------------------------------------------
+
+  // Подготовка данных для Таблицы по расчетам карт для вывода на сайт
+  const coefPriceYear = { 1: 0 };
+  for (let i = 2; i <= 7; i++) {
+    coefPriceYear[i] = coefPrice;
+  }
+  const offSeasonDiscountYear = {};
+  for (let i = 1; i <= 7; i++) {
+    offSeasonDiscountYear[i] = -500;
+  }
+
+  const meanPriceYear = {};
+  for (let i = 1; i <= 7; i++) {
+    meanPriceYear[i] = Math.round(
+      roundingWithMultiplicity(earningsCardYear[i], 10 ** 2) /
+        roundingWithMultiplicity(countClientYear[i], 10 ** 1)
+    );
+  }
+
+  const headSalesCards = [
+    "Номер года",
+    "Клиенты",
+    "Цена новые",
+    "Скидка не сезон",
+    "Цена продления",
+    "Средняя цена",
+    "Сумма",
+  ];
+  const saleCards = {};
+  for (let key in priceNew) {
+    if (
+      priceOld.hasOwnProperty(key) &&
+      countClientYear.hasOwnProperty(key) &&
+      offSeasonDiscountYear.hasOwnProperty(key) &&
+      meanPriceYear.hasOwnProperty(key) &&
+      earningsCardYear.hasOwnProperty(key)
+    ) {
+      saleCards[key] = [
+        roundingWithMultiplicity(countClientYear[key], 10 ** 1),
+        priceNew[key],
+        offSeasonDiscountYear[key],
+        priceOld[key],
+        meanPriceYear[key],
+        roundingWithMultiplicity(earningsCardYear[key], 10 ** 2),
+      ];
+    }
+  }
+
+  //------------------------------------------------------------------------------------------------
+
   // По Тренерам мес
   const CoachInMonth = {};
   for (let i = 1; i <= 84; i++) {
@@ -1506,6 +1557,8 @@ function modelAGF(
     cashGap: cashGap, // Сумма кассового разрыва, если есть, если нет -> "НЕТ"
     sumNOPAT: sumNOPAT, //Сумма NOPAT за 7 лет. Для расчетов в Графике ROI
     dccf: dccf, // Дисконтированны накопленный поток с периодом инвестиций, для Графика Окупаемости
+    headSalesCards: headSalesCards, // Массив заголовков полей для Таблицы расчета продаж карт
+    saleCards: saleCards, // Объект для заполнения Таблицы расчета продаж карт
   };
   return modelIndicators;
 }
@@ -2038,6 +2091,9 @@ function calculate() {
     checkbox.checked
   );
 
+  const fieldNamesSales = model["headSalesCards"]; // названия полей для Таблицы Продажи карт
+  const dataSales = model["saleCards"]; // данные для заполнения Таблицы Продажи карт
+
   // Выводим сумму инвестиций
   document.querySelector("#out1").innerText =
     model["sumInvestments"].toLocaleString("ru-RU");
@@ -2320,6 +2376,9 @@ function calculate() {
   }
 
   updateChart(myChart4, dataNew4, dataNew4_2); // Обновляем График Выбора налогообложения
+
+  // Таблица Рассчет продаж.
+  createSalesTable(fieldNamesSales, dataSales);
 }
 
 //----------------------------------------------------------------
@@ -2584,3 +2643,58 @@ function getRowIndexInTbody(rowId) {
 //   return checkbox.checked;
 // }
 // const isChecked = getCheckboxStatus(); // возврат Булева значения по состоянию галки
+
+// Функция создания таблицы Расчет продаж карт
+function createSalesTable(fieldNames, data) {
+  const container = document.getElementById("calculatingSales");
+  container.innerHTML = "";
+
+  const table = document.createElement("table");
+  table.id = "salesTable"; // Важно для стилей!
+
+  // Заголовок
+  const caption = document.createElement("caption");
+  caption.textContent = "Расчет продаж карт";
+  table.appendChild(caption);
+
+  // Header
+  const thead = document.createElement("thead");
+  const headerRow = document.createElement("tr");
+
+  fieldNames.forEach((fieldName) => {
+    const th = document.createElement("th");
+    th.textContent = fieldName;
+    headerRow.appendChild(th);
+  });
+
+  thead.appendChild(headerRow);
+  table.appendChild(thead);
+
+  // Тело таблицы
+  const tbody = document.createElement("tbody");
+  const years = Object.keys(data)
+    .map(Number)
+    .sort((a, b) => a - b);
+
+  years.forEach((year) => {
+    const row = document.createElement("tr");
+
+    // Номер года (первая ячейка)
+    const yearCell = document.createElement("td");
+    yearCell.textContent = year;
+    row.appendChild(yearCell);
+
+    // Остальные данные
+    data[year].forEach((value) => {
+      const cell = document.createElement("td");
+      cell.textContent =
+        typeof value === "number" ? value.toLocaleString("ru-RU") : value;
+      row.appendChild(cell);
+    });
+
+    tbody.appendChild(row);
+  });
+
+  table.appendChild(tbody);
+  container.appendChild(table);
+}
