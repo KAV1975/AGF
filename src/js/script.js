@@ -285,6 +285,10 @@ function modelAGF(
     sumInvestments += investment[key][0];
   }
 
+  // Взнос Собственника
+  const OwnerContribution =
+    loanAmount < sumInvestments ? sumInvestments - loanAmount : 0; //Взнос Собственника
+
   //-------------------------------------------------------------------------
 
   // ПРИХОД
@@ -1161,20 +1165,24 @@ function modelAGF(
   //NOPAT для расчет Рентабельности инвестиций. NOPAT Прибыль до уплаты % и налоогов и налог расчитывается "как бы без учета %"
   const NOPATYear = {};
   for (let i = 1; i <= 7; i++) {
-    if (flagTaxes) {
-      NOPATYear[i] = grossProfit[i] - earningsYear[i] * 0.06;
+    if (OwnerContribution == sumInvestments) {
+      NOPATYear[i] = grossProfit[i] - taxesYear[i];
     } else {
-      NOPATYear[i] = grossProfit[i] * (1 - 0.15);
+      if (flagTaxes) {
+        NOPATYear[i] = grossProfit[i] - earningsYear[i] * 0.06;
+      } else {
+        NOPATYear[i] = grossProfit[i] * (1 - 0.15);
+      }
     }
   }
 
+  //Сумма NOPAT за 7 дет
+  const sumNOPAT = Object.values(NOPATYear).reduce((accumulator, value) => {
+    return accumulator + value;
+  }, 0);
+
   //Средняя рентабельность инвестиций по периоду 7 лет,  По методологии NOPAT
-  const meanProfitabilityI =
-    Object.values(NOPATYear).reduce((accumulator, value) => {
-      return accumulator + value;
-    }, 0) /
-    sumInvestments /
-    7;
+  const meanProfitabilityI = sumNOPAT / sumInvestments / 7;
 
   // Рентабельность инвестиций по годам,  По методологии NOPAT
   const profitabilityI = {};
@@ -1183,9 +1191,6 @@ function modelAGF(
   }
 
   // Ренатбальность Собственного капитала
-  const OwnerContribution =
-    loanAmount < sumInvestments ? sumInvestments - loanAmount : 0; //Взнос Собственника
-
   //Средняя рентабельность Собственного капитала по периоду 7 лет
   const meanROE =
     OwnerContribution > 0
@@ -1492,6 +1497,7 @@ function modelAGF(
     interestDepositYear: interestDepositYear, // Ставка по депозиту
     OwnerContribution: OwnerContribution, // Соственные средства
     cashGap: cashGap, // Сумма кассового разрыва, если есть, если нет -> "НЕТ"
+    sumNOPAT: sumNOPAT, //Сумма NOPAT за 7 лет. Для расчетов в Графике ROI
   };
   return modelIndicators;
 }
@@ -1705,7 +1711,7 @@ const data2_2 = {};
 
 for (let i = left_; i <= right_; i += 100) {
   (data2[i] =
-    (modelAGF(i)["sumNetProfit"] / 7 / modelAGF(i)["sumInvestments"]) * 100),
+    (modelAGF(i)["sumNOPAT"] / 7 / modelAGF(i)["sumInvestments"]) * 100),
     (data2_2[i] = keyRate_ * 100);
 }
 
@@ -1799,7 +1805,7 @@ const data3_2 = {};
 
 for (let i = 0; i <= 1200; i += 50) {
   (data3[i] =
-    (modelAGF(left_, i)["sumNetProfit"] /
+    (modelAGF(left_, i)["sumNOPAT"] /
       7 /
       modelAGF(left_, i)["sumInvestments"]) *
     100),
@@ -2015,7 +2021,7 @@ function calculate() {
   if (model["meanProfitabilityI"] >= 0) {
     document.querySelector("#out2").innerText = `${(
       model["meanProfitabilityI"] * 100
-    ).toFixed(2)} %`;
+    ).toFixed(0)} %`;
     document.querySelector("#out2").className = "black";
   } else {
     document.querySelector("#out2").innerText = "убыток";
@@ -2032,7 +2038,7 @@ function calculate() {
   if (model["meanROE"] >= 0) {
     document.querySelector("#out3").innerText = `${(
       model["meanROE"] * 100
-    ).toFixed(2)} %`;
+    ).toFixed(0)} %`;
     document.querySelector("#out3").className = "black";
   } else {
     document.querySelector("#out3").innerText = "убыток";
@@ -2215,7 +2221,7 @@ function calculate() {
         interestRate,
         loanPeriod,
         checkbox.checked
-      )["sumNetProfit"] /
+      )["sumNOPAT"] /
         7 /
         modelAGF(
           i,
@@ -2245,7 +2251,7 @@ function calculate() {
         interestRate,
         loanPeriod,
         checkbox.checked
-      )["sumNetProfit"] /
+      )["sumNOPAT"] /
         7 /
         modelAGF(
           square,
