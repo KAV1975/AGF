@@ -1064,14 +1064,16 @@ function modelAGF(
       ? keyRate - 0.02
       : 0;
 
-  const cfWithInvestYear = { 0: -sumInvestments };
+  const cfWithInvestYear = { 0: flag ? -sumInvestments : 0 };
   for (let i = 1; i <= 7; i++) {
     cfWithInvestYear[i] = cfYear[i] + bodyOfDutyPaymentYear[i];
   }
 
   const dccf = { 0: cfWithInvestYear[0] };
   for (let i = 1; i <= 7; i++) {
-    dccf[i] = dccf[i - 1] + cfWithInvestYear[i] / (1 + discountRate) ** i;
+    dccf[i] = flag
+      ? dccf[i - 1] + cfWithInvestYear[i] / (1 + discountRate) ** i
+      : 0;
   }
 
   const ccfWithInvestYear = { 0: cfWithInvestYear[0] }; // Для графика срока окупаемости
@@ -1538,7 +1540,7 @@ const myChart = new Chart(ctx, {
     labels: Object.keys(data),
     datasets: [
       {
-        label: "PP",
+        label: "Простой срок окупаемости",
         data: Object.values(data),
         radius: 0,
         borderWidth: 3,
@@ -1547,7 +1549,7 @@ const myChart = new Chart(ctx, {
         fill: false, // Не заливать область под линией
       },
       {
-        label: "DPP",
+        label: "Дисконтированный срок окупаемости",
         data: Object.values(data),
         radius: 0,
         borderWidth: 3,
