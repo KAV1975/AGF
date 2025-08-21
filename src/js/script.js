@@ -1057,7 +1057,12 @@ function modelAGF(
     }
   }
 
-  //Дисконтированный период окупаемости. БЕЗ ДОП ИНВЕСТИЦИЙ В ПЕРИОДАХ >=1
+  //Дисконтированный период окупаемости. БЕЗ ДОП ИНВЕСТИЦИЙ В ПЕРИОДАХ >=1. Ставка дисконтирования КС - 2 пп
+
+  const discountRate =
+    typeof keyRate === "number" && keyRate > 0.02 && keyRate < 1
+      ? keyRate - 0.02
+      : 0;
 
   const cfWithInvestYear = { 0: -sumInvestments };
   for (let i = 1; i <= 7; i++) {
@@ -1066,7 +1071,7 @@ function modelAGF(
 
   const dccf = { 0: cfWithInvestYear[0] };
   for (let i = 1; i <= 7; i++) {
-    dccf[i] = dccf[i - 1] + cfWithInvestYear[i] / (1 + keyRate) ** i;
+    dccf[i] = dccf[i - 1] + cfWithInvestYear[i] / (1 + discountRate) ** i;
   }
 
   const ccfWithInvestYear = { 0: cfWithInvestYear[0] }; // Для графика срока окупаемости
@@ -1498,6 +1503,7 @@ function modelAGF(
     OwnerContribution: OwnerContribution, // Соственные средства
     cashGap: cashGap, // Сумма кассового разрыва, если есть, если нет -> "НЕТ"
     sumNOPAT: sumNOPAT, //Сумма NOPAT за 7 лет. Для расчетов в Графике ROI
+    dccf: dccf, // Дисконтированны накопленный поток с периодом инвестиций, для Графика Окупаемости
   };
   return modelIndicators;
 }
@@ -1532,12 +1538,22 @@ const myChart = new Chart(ctx, {
     labels: Object.keys(data),
     datasets: [
       {
-        label: "Окупаемость",
+        label: "PP",
         data: Object.values(data),
         radius: 0,
         borderWidth: 3,
         tension: 0.4, // Сглаживание (0 = нет, 1 = макс.)
         borderColor: "black", // Пример цвета
+        fill: false, // Не заливать область под линией
+      },
+      {
+        label: "DPP",
+        data: Object.values(data),
+        radius: 0,
+        borderWidth: 3,
+        tension: 0.4, // Сглаживание (0 = нет, 1 = макс.)
+        borderColor: "black", // Пример цвета
+        borderDash: [10, 5],
         fill: false, // Не заливать область под линией
       },
       {
@@ -1564,8 +1580,15 @@ const myChart = new Chart(ctx, {
         },
       },
       legend: {
-        display: false,
-        position: "right",
+        display: true,
+        position: "bottom",
+        labels: {
+          font: {
+            family: "Times New Roman",
+            size: 10,
+          },
+          padding: 20, // Отступ между элементами легенды
+        },
       },
     },
     responsive: true,
@@ -1670,7 +1693,7 @@ const myChart1 = new Chart(ctx1, {
       },
       legend: {
         display: false,
-        position: "right",
+        position: "bottom",
       },
     },
     responsive: true,
@@ -2189,7 +2212,11 @@ function calculate() {
   }
   Table1.rows.item(lastRow).cells[1].innerText = `${model["keyRate"] * 100} %`;
 
-  updateChart(myChart, Object.values(model["ccfWithInvestYear"])); // Обновляем График Окупаемости
+  updateChart(
+    myChart,
+    Object.values(model["ccfWithInvestYear"]),
+    Object.values(model["dccf"])
+  ); // Обновляем График Окупаемости
 
   // Вывод таблицы ИНВЕСТИЦИИ  на страницу
   document.getElementById("invest").innerHTML = createInvestmentTable(
