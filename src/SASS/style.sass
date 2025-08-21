@@ -40,10 +40,6 @@
     margin: 0 auto
 
 
-// canvas
-//     max-width: 100%
-//     max-height: 100%
-
 .chart_
     position: relative
     width: 100%
@@ -174,10 +170,6 @@ tr
         font-weight: bold
         font-style: italic
 
-// .container-left
-//     display: flex
-//     flex-direction: column
-    // align-items: left
 
 .input
     margin-bottom: 15px
@@ -274,6 +266,7 @@ span
     border-collapse: collapse
     font-size: 12px
     margin: 10px 0
+    table-layout: fixed /* Фиксированная ширина столбцов */
 
 #salesTable caption
     font-weight: bold
@@ -288,46 +281,88 @@ span
     text-align: center
     vertical-align: middle
     font-weight: bold
-    // background-color: #f0f0f0
     font-size: 11px
+    word-wrap: break-word /* Перенос слов */
+    overflow-wrap: break-word /* Перенос длинных слов */
+    white-space: normal /* Разрешить перенос строк */
+    line-height: 1.2 /* Межстрочный интервал */
+    hyphens: auto /* Автоматическая расстановка переносов */
+    -webkit-hyphens: auto
+    -ms-hyphens: auto
+    overflow: hidden
+    text-overflow: ellipsis
 
 #salesTable td
     border: 1px solid #696969
     padding: 6px 4px
     vertical-align: middle
+    word-wrap: break-word /* Перенос слов */
+    overflow-wrap: break-word /* Перенос длинных слов */
 
-/* Первый столбец (Номер года) - по центру */
-#salesTable td:first-child
-    text-align: center
+/* Первый столбец (Номер года) - по центру, узкий */
+#salesTable
+    th:first-child,
+    td:first-child
+        text-align: center
+        width: 50px /* Фиксированная ширина для первого столбца */
+        min-width: 50px
+        max-width: 50px
 
-/* Остальные столбцы - прижать вправо */
-#salesTable td:not(:first-child)
-    text-align: right
+/* Остальные столбцы - прижать вправо, равномерная ширина */
+#salesTable
+    td:not(:first-child)
+        text-align: right
+        width: auto /* Автоматическая ширина для остальных столбцов */
+        min-width: 80px
 
 /* Адаптивность для мобильных устройств */
 @media (max-width: 768px)
     #salesTable
         font-size: 10px
-    
+        min-width: 600px
+
     #salesTable th,
     #salesTable td
         padding: 4px 2px
-    
+
     #salesTable caption
         font-size: 12px
-    
+
     .table-container
         overflow-x: auto
         -webkit-overflow-scrolling: touch
-    
+
+    /* На мобильных делаем первый столбец уже */
     #salesTable
-        min-width: 600px
+        th:first-child,
+        td:first-child
+            width: 40px
+            min-width: 40px
+            max-width: 40px
+
+    #salesTable
+        th:not(:first-child),
+        td:not(:first-child)
+            min-width: 70px
 
 @media (max-width: 480px)
     #salesTable
         font-size: 9px
         min-width: 500px
-    
+
     #salesTable th,
     #salesTable td
         padding: 3px 1px
+
+    /* На очень маленьких экранах еще уже */
+    #salesTable
+        th:first-child,
+        td:first-child
+            width: 35px
+            min-width: 35px
+            max-width: 35px
+
+    #salesTable
+        th:not(:first-child),
+        td:not(:first-child)
+            min-width: 60px

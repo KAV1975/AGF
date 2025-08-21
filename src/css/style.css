@@ -641,6 +641,7 @@ span #out2 {
   border-collapse: collapse;
   font-size: 12px;
   margin: 10px 0;
+  table-layout: fixed;
 }
 
 #salesTable caption {
@@ -658,28 +659,46 @@ span #out2 {
   vertical-align: middle;
   font-weight: bold;
   font-size: 11px;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  line-height: 1.2;
+  hyphens: auto;
+  -webkit-hyphens: auto;
+  -ms-hyphens: auto;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 #salesTable td {
   border: 1px solid #696969;
   padding: 6px 4px;
   vertical-align: middle;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 
-/* Первый столбец (Номер года) - по центру */
+/* Первый столбец (Номер года) - по центру, узкий */
+#salesTable th:first-child,
 #salesTable td:first-child {
   text-align: center;
+  width: 50px;
+  min-width: 50px;
+  max-width: 50px;
 }
 
-/* Остальные столбцы - прижать вправо */
+/* Остальные столбцы - прижать вправо, равномерная ширина */
 #salesTable td:not(:first-child) {
   text-align: right;
+  width: auto;
+  min-width: 80px;
 }
 
 /* Адаптивность для мобильных устройств */
 @media (max-width: 768px) {
   #salesTable {
     font-size: 10px;
+    min-width: 600px;
   }
   #salesTable th,
   #salesTable td {
@@ -692,8 +711,16 @@ span #out2 {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
   }
-  #salesTable {
-    min-width: 600px;
+  /* На мобильных делаем первый столбец уже */
+  #salesTable th:first-child,
+  #salesTable td:first-child {
+    width: 40px;
+    min-width: 40px;
+    max-width: 40px;
+  }
+  #salesTable th:not(:first-child),
+  #salesTable td:not(:first-child) {
+    min-width: 70px;
   }
 }
 @media (max-width: 480px) {
@@ -704,5 +731,16 @@ span #out2 {
   #salesTable th,
   #salesTable td {
     padding: 3px 1px;
+  }
+  /* На очень маленьких экранах еще уже */
+  #salesTable th:first-child,
+  #salesTable td:first-child {
+    width: 35px;
+    min-width: 35px;
+    max-width: 35px;
+  }
+  #salesTable th:not(:first-child),
+  #salesTable td:not(:first-child) {
+    min-width: 60px;
   }
 }

@@ -2698,3 +2698,7 @@ function createSalesTable(fieldNames, data) {
   table.appendChild(tbody);
   container.appendChild(table);
 }
+
+//----------------------------------------------------------------------
+
+//BOX-PLOT
