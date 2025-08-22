@@ -391,17 +391,19 @@ function modelAGF(
 
   const meanPriceYear = {};
   for (let i = 1; i <= 7; i++) {
-    meanPriceYear[i] = Math.round(
-      roundingWithMultiplicity(earningsCardYear[i], 10 ** 2) /
-        roundingWithMultiplicity(countClientYear[i], 10 ** 1)
-    );
+    meanPriceYear[i] =
+      countClientYear[i] > 0
+        ? Math.round(
+            roundingWithMultiplicity(earningsCardYear[i], 10 ** 2) /
+              roundingWithMultiplicity(countClientYear[i], 10 ** 1)
+          )
+        : 0;
   }
 
   const headSalesCards = [
     "Номер года",
     "Клиенты",
     "Цена новые",
-    "Скидка не сезон",
     "Цена продления",
     "Средняя цена",
     "Сумма",
@@ -411,14 +413,12 @@ function modelAGF(
     if (
       priceOld.hasOwnProperty(key) &&
       countClientYear.hasOwnProperty(key) &&
-      offSeasonDiscountYear.hasOwnProperty(key) &&
       meanPriceYear.hasOwnProperty(key) &&
       earningsCardYear.hasOwnProperty(key)
     ) {
       saleCards[key] = [
         roundingWithMultiplicity(countClientYear[key], 10 ** 1),
         priceNew[key],
-        offSeasonDiscountYear[key],
         priceOld[key],
         meanPriceYear[key],
         roundingWithMultiplicity(earningsCardYear[key], 10 ** 2),
@@ -2496,7 +2496,7 @@ function createCashFlowTable(ccf, ...incomeElems) {
   let html = `
     <div class="table-container">
         <table class="table" id="cashFlow">
-            <caption class="table-caption">Движение денежных средств</caption>
+            <caption class="table-caption">Прогноз движения денежных средств</caption>
             <thead class="table-fields">
                 <tr>
                     <th>Наименование</th>
@@ -2701,4 +2701,57 @@ function createSalesTable(fieldNames, data) {
 
 //----------------------------------------------------------------------
 
-//BOX-PLOT
+//ДЛЯ СРАВНЕНИЯ ПО КАРТАМ
+
+const average = (arr) =>
+  arr.length ? arr.reduce((a, b) => a + b) / arr.length : 0; //расчет среднего значения массива
+
+const agSales = [
+  26735485, 26538413, 20581144, 19259879, 20343917, 17789947, 16615240,
+  22197891, 61950042, 25946730, 30028856, 35403025, 38892355, 32476996,
+  28820002, 29691727, 22996706, 21539188, 23895244, 20964947, 22209142,
+  24792403, 67816098, 32040374, 36046581, 40270081, 42585683, 37262234,
+];
+
+console.log(Math.min(...agSales));
+console.log(roundingWithMultiplicity(average(agSales), 2));
+console.log(Math.max(...agSales));
+
+//-------------------------------------------------------------------------------------
+// К навигационному меню
+// Добавление класса active при скролле
+const sections = document.querySelectorAll("section[id]");
+const navLinks = document.querySelectorAll(".nav-menu__list-item a");
+
+window.addEventListener("scroll", () => {
+  let current = "";
+
+  sections.forEach((section) => {
+    const sectionTop = section.offsetTop;
+    const sectionHeight = section.clientHeight;
+
+    if (pageYOffset >= sectionTop - 100) {
+      current = section.getAttribute("id");
+    }
+  });
+
+  navLinks.forEach((link) => {
+    link.classList.remove("active");
+    if (link.getAttribute("href").substring(1) === current) {
+      link.classList.add("active");
+    }
+  });
+});
+
+document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+  anchor.addEventListener("click", function (e) {
+    e.preventDefault();
+    const target = document.querySelector(this.getAttribute("href"));
+    if (target) {
+      target.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  });
+});

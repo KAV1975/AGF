@@ -1,6 +1,17 @@
 @import "normalizez.scss"
 @import "resets.scss"
 
+// Переменные
+$primary-color: #000000
+$secondary-color: #FF0000
+$background-color: #A9A9A9
+$text-color: #000000
+$hover-color: #696969
+$shadow: 0 2px 10px rgba(0, 0, 0, 0.1)
+$transition: all 0.3s ease
+
+
+
 
 *
     box-sizing: border-box
@@ -8,7 +19,7 @@
 
 
 .top-section
-    width: 90%
+    width: 95%
     margin-left: 1%
     margin-bottom: 1%
     display: flex
@@ -366,3 +377,131 @@ span
         th:not(:first-child),
         td:not(:first-child)
             min-width: 60px
+
+/*Стилизация навигационного меню*/
+
+
+// Базовые стили для top-section
+.top-section1
+  position: fixed
+  top: 0
+  left: 0
+  width: 95%
+  background-color: $background-color
+  box-shadow: $shadow
+  z-index: 1000
+  transition: $transition
+
+  &__nav-container
+    width: 100%
+    max-width: 1200px
+    margin: 0 auto
+    padding: 0 20px
+
+  &__header
+    display: flex
+    justify-content: center
+    align-items: center
+    padding: 15px 0
+
+  &__nav
+    width: 100%
+
+// Стили для навигационного меню
+.nav-menu
+  &__list
+    display: flex
+    justify-content: space-between
+    align-items: center
+    list-style: none
+    margin: 0
+    padding: 0
+    width: 100%
+
+  &__list-item
+    flex: 1
+    text-align: center
+
+    a
+      display: block
+      text-decoration: none
+      color: $text-color
+      font-weight: 600
+      font-size: 14px
+      padding: 12px 8px
+      transition: $transition
+      border-bottom: 2px solid transparent
+
+      &:hover
+        color: $hover-color
+        border-bottom-color: $hover-color
+
+// Адаптивность для планшетов
+@media (max-width: 1024px)
+  .nav-menu
+    &__list
+      justify-content: space-around
+
+    &__list-item
+      flex: none
+      
+      a
+        font-size: 13px
+        padding: 10px 6px
+
+// Адаптивность для мобильных устройств
+@media (max-width: 768px)
+  .top-section
+    &__header
+      padding: 10px 0
+
+  .nav-menu
+    &__list
+      flex-wrap: wrap
+      justify-content: center
+      gap: 5px
+
+    &__list-item
+      flex: 0 0 calc(33.333% - 10px)
+      margin-bottom: 5px
+      
+      a
+        font-size: 12px
+        padding: 8px 4px
+        text-align: center
+        border-radius: 6px
+        background-color: lighten($background-color, 5%)
+        
+        &:hover
+          background-color: lighten($hover-color, 45%)
+
+// Для очень маленьких экранов
+@media (max-width: 480px)
+  .nav-menu
+    &__list-item
+      flex: 0 0 calc(50% - 10px)
+      
+      a
+        font-size: 11px
+        padding: 6px 3px
+
+// Стили для активной ссылки при скролле
+.nav-menu__list-item a.active
+  color: $secondary-color
+  border-bottom-color: $secondary-color
+  font-weight: 700
+
+// Прокрутка для контента (чтобы не перекрывалось фиксированным меню)
+body
+  padding-top: 70px // Высота меню + отступ
+
+  @media (max-width: 768px)
+    padding-top: 60px
+
+// Дополнительные стили для плавного скролла
+html
+  scroll-behavior: smooth
+  scroll-padding-top: 80px // Отступ при скролле к якорю
+
+  @media (max-width: 768px)
+    scroll-padding-top: 70px

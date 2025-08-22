@@ -6,10 +6,36 @@
     <link rel="stylesheet" href="src/css/style.css" />
     <title>AGF</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> <!-- Подключение библиотеки для графиков -->
+
   </head>
   <body>
 
-    <section class="top-section">
+    <!-- Первая секция -->
+    <section class="top-section1">
+    <!-- ограничивающий контейнер нав меню -->
+    <div class="container top-section__nav-container">
+
+        <!-- Навигационное меню -->
+        <header class="top-section__header"> 
+            <nav class="top-section__nav nav-menu">
+                <ul class="nav-menu__list">
+                    <li class="nav-menu__list-item"><a href="#inputData">Ввод данных</a></li>
+                    <li class="nav-menu__list-item"><a href="#financialResults">Финансовые результаты</a></li>
+                    <li class="nav-menu__list-item"><a href="#analyticsСharts">Графики</a></li>
+                    <li class="nav-menu__list-item"><a href="#investment">Инвестиции</a></li>
+                    <li class="nav-menu__list-item"><a href="#cashFlow">ДДС</a></li>
+                    <li class="nav-menu__list-item"><a href="#lastElem">Последнее</a></li>
+
+                </ul>
+            </nav>
+        </header>
+    </div>
+</section>
+
+
+
+
+    <section class="top-section" id="inputData">
       <div class="container-left">
         <div class="input">
           <h1>ВВЕДИТЕ ИСХОДНЫЕ ДАННЫЕ</h1>
@@ -99,7 +125,7 @@
 </div>
 </section>
 
-<section class="top-section">
+<section class="top-section" id="financialResults">
 <div class="table-container">
     <table class="table" id="ProfitAndLoss">
       <caption class="table-caption"> Прогноз финансовых результатов и анализ рентабельности на 7 лет.</caption>
@@ -297,7 +323,7 @@
 
 
 
-<section class="top-section">
+<section class="top-section" id="analyticsСharts">
   <div class="container-left">    
  <canvas class = "chart_" id="myChart2" ></canvas>
  <canvas class = "chart_" id="myChart4" ></canvas>
@@ -313,7 +339,7 @@
 
 
 
-<section class="top-section">
+<section class="top-section" id="investment">
   <div class="container-left">    
   <div class="table-container" id="invest"></div>
 
@@ -338,7 +364,7 @@
 
 
 
-<section class="top-section">
+<section class="top-section" id="cashFlow">
 
   <div class="table-container" id="cashFlow"></div>
 
@@ -347,7 +373,7 @@
 
 
 
-<section class="top-section">
+<section class="top-section" id="lastElem">
 
 <div class="container-left">   
   <div class="table-container" id="calculatingSales"></div>
@@ -356,13 +382,11 @@
 
 <div class="container-right">
 
-  
+
+
 </div>
 
-
 </section>
-
-
 
 
 

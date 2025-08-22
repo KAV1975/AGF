@@ -366,7 +366,7 @@ table {
 }
 
 .top-section {
-  width: 90%;
+  width: 95%;
   margin-left: 1%;
   margin-bottom: 1%;
   display: flex;
@@ -742,5 +742,129 @@ span #out2 {
   #salesTable th:not(:first-child),
   #salesTable td:not(:first-child) {
     min-width: 60px;
+  }
+}
+/*Стилизация навигационного меню*/
+.top-section1 {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 95%;
+  background-color: #A9A9A9;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+  transition: all 0.3s ease;
+}
+.top-section1__nav-container {
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+.top-section1__header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 0;
+}
+.top-section1__nav {
+  width: 100%;
+}
+
+.nav-menu__list {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+.nav-menu__list-item {
+  flex: 1;
+  text-align: center;
+}
+.nav-menu__list-item a {
+  display: block;
+  text-decoration: none;
+  color: #000000;
+  font-weight: 600;
+  font-size: 14px;
+  padding: 12px 8px;
+  transition: all 0.3s ease;
+  border-bottom: 2px solid transparent;
+}
+.nav-menu__list-item a:hover {
+  color: #696969;
+  border-bottom-color: #696969;
+}
+
+@media (max-width: 1024px) {
+  .nav-menu__list {
+    justify-content: space-around;
+  }
+  .nav-menu__list-item {
+    flex: none;
+  }
+  .nav-menu__list-item a {
+    font-size: 13px;
+    padding: 10px 6px;
+  }
+}
+@media (max-width: 768px) {
+  .top-section__header {
+    padding: 10px 0;
+  }
+  .nav-menu__list {
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 5px;
+  }
+  .nav-menu__list-item {
+    flex: 0 0 calc(33.333% - 10px);
+    margin-bottom: 5px;
+  }
+  .nav-menu__list-item a {
+    font-size: 12px;
+    padding: 8px 4px;
+    text-align: center;
+    border-radius: 6px;
+    background-color: rgb(181.75, 181.75, 181.75);
+  }
+  .nav-menu__list-item a:hover {
+    background-color: rgb(219.75, 219.75, 219.75);
+  }
+}
+@media (max-width: 480px) {
+  .nav-menu__list-item {
+    flex: 0 0 calc(50% - 10px);
+  }
+  .nav-menu__list-item a {
+    font-size: 11px;
+    padding: 6px 3px;
+  }
+}
+.nav-menu__list-item a.active {
+  color: #FF0000;
+  border-bottom-color: #FF0000;
+  font-weight: 700;
+}
+
+body {
+  padding-top: 70px;
+}
+@media (max-width: 768px) {
+  body {
+    padding-top: 60px;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px;
+}
+@media (max-width: 768px) {
+  html {
+    scroll-padding-top: 70px;
   }
 }
