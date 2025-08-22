@@ -1046,12 +1046,13 @@ function modelAGF(
   //CF по месяцам
   const cfMonth = {};
   for (let i = 1; i <= 84; i++) {
-    cfMonth[i] =
-      earningsMonth[i] -
-      (operatingExpensesMonth[i] +
-        interestPayment[i] +
-        bodyOfDutyPayment[i] +
-        taxesMonth[i]);
+    cfMonth[i] = flag
+      ? earningsMonth[i] -
+        (operatingExpensesMonth[i] +
+          interestPayment[i] +
+          bodyOfDutyPayment[i] +
+          taxesMonth[i])
+      : 0;
   }
 
   //CF по годам
@@ -1068,9 +1069,9 @@ function modelAGF(
   }
 
   //CCF по годам
-  const ccfYear = { 1: cfYear[1] };
+  const ccfYear = { 1: flag ? cfYear[1] : 0 };
   for (let i = 2; i <= 7; i++) {
-    ccfYear[i] = ccfYear[i - 1] + cfYear[i];
+    ccfYear[i] = flag ? ccfYear[i - 1] + cfYear[i] : 0;
   }
 
   //------------------------------------------------------------------------
@@ -1452,7 +1453,10 @@ function modelAGF(
       "Взнос Собственника",
     ],
     dutyIn: [
-      Object.assign({ 0: loanAmount ?? 0 }, techObject1),
+      Object.assign(
+        { 0: flag && loanAmount > 0 ? loanAmount : 0 },
+        techObject1
+      ),
       "Сумма кредита",
     ],
     dutyOut: [
@@ -1472,11 +1476,12 @@ function modelAGF(
 
   //Заполняем Итоги по фин блоку
   for (let i = 0; i <= 7; i++) {
-    credit.cfFinance[0][i] =
-      credit.ownerIn[0][i] +
-      credit.dutyIn[0][i] -
-      credit.dutyOut[0][i] -
-      credit.interestOut[0][i];
+    credit.cfFinance[0][i] = flag
+      ? credit.ownerIn[0][i] +
+        credit.dutyIn[0][i] -
+        credit.dutyOut[0][i] -
+        credit.interestOut[0][i]
+      : 0;
   }
 
   //ЧТД инвестиционной деятельности
@@ -1498,16 +1503,20 @@ function modelAGF(
 
   //Заполняем Итоги по ИТОГУ
   for (let i = 0; i <= 7; i++) {
-    cf.cf[0][i] =
-      operating.ccFOA[0][i] + credit.cfFinance[0][i] + inv.cfInv[0][i];
+    cf.cf[0][i] = flag
+      ? operating.ccFOA[0][i] + credit.cfFinance[0][i] + inv.cfInv[0][i]
+      : 0;
   }
 
   //Накопленный денежный поток
   const ccf = {
-    ccf: [{ 0: cf.cf[0][0], ...techObject1 }, "НАКОПЛЕННЫЙ ДЕНЕЖНЫЙ ПОТОК"],
+    ccf: [
+      { 0: flag ? cf.cf[0][0] : 0, ...techObject1 },
+      "НАКОПЛЕННЫЙ ДЕНЕЖНЫЙ ПОТОК",
+    ],
   };
   for (let i = 1; i <= 7; i++) {
-    ccf.ccf[0][i] = ccf.ccf[0][i - 1] + cf.cf[0][i];
+    ccf.ccf[0][i] = flag ? ccf.ccf[0][i - 1] + cf.cf[0][i] : 0;
   }
 
   //------------------------------------------------------------------------------------------------------
