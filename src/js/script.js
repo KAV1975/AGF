@@ -2422,9 +2422,37 @@ document.getElementById("number3").addEventListener("input", function (e) {
 //----------------------------------------------------------------------
 
 document.querySelector(".btn").addEventListener("click", calculate); // При нажатии конопки "РАССЧИТАТЬ"
-// При нажатии ENTER
+// При нажатии ENTER рассчитать функцию calculate
 document.addEventListener("keydown", function (event) {
   if (event.key == "Enter") {
+    calculate();
+  }
+});
+
+// При щелчке вне полей ввода выполняется расчет, в том числе при нажатии/отжатии галки Амортизации
+document.addEventListener("click", function (event) {
+  // Если клик был не по полям ввода и не по лейблам, выполнить расчет
+  if (
+    event.target.id !== "number1" &&
+    event.target.id !== "number2" &&
+    event.target.id !== "number3" &&
+    event.target.id !== "number4" &&
+    event.target.id !== "number5" &&
+    event.target.tagName !== "LABEL"
+  ) {
+    calculate();
+  }
+});
+
+// Сбрасываем введенные значения при нажатие на Esc
+document.addEventListener("keydown", function (event) {
+  if (event.key == "Escape") {
+    document.getElementById("number1").value = ""; //сбрасываем Площадь
+    document.getElementById("number2").value = ""; //сбрасываем Арендную ставку
+    document.getElementById("number3").value = ""; //сбрасываем сумму кредита
+    document.getElementById("number4").value = ""; //сбрасываем период кредита
+    document.getElementById("number5").value = ""; //сбрасываем процентную ставку
+    document.getElementById("myCheckbox").checked = false; // Сбрасываем чекбокс
     calculate();
   }
 });
