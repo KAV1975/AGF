@@ -2392,6 +2392,31 @@ function calculate() {
 
   // Таблица Рассчет продаж.
   createSalesTable(fieldNamesSales, dataSales);
+
+  const comparisonData = [];
+  for (let key in dataSales) {
+    comparisonData.push(dataSales[key].at(-1));
+  }
+
+  //ДЛЯ СРАВНЕНИЯ ПО КАРТАМ
+
+  const average = (arr) =>
+    arr.length ? arr.reduce((a, b) => a + b) / arr.length : 0; //расчет среднего значения массива
+
+  const agSales = [
+    26735485, 26538413, 20581144, 19259879, 20343917, 17789947, 16615240,
+    22197891, 61950042, 25946730, 30028856, 35403025, 38892355, 32476996,
+    28820002, 29691727, 22996706, 21539188, 23895244, 20964947, 22209142,
+    24792403, 67816098, 32040374, 36046581, 40270081, 42585683, 37262234,
+  ];
+
+  // Создадим второй набор данных для сравнения (например, +20%)
+  // const comparisonData = agSales.map((value) => value * 1.2);
+
+  createComparisonBoxplot(agSales, comparisonData, [
+    "AG 2023-2024 гг",
+    "Модель",
+  ]);
 }
 
 //----------------------------------------------------------------
@@ -2745,22 +2770,6 @@ function createSalesTable(fieldNames, data) {
 
 //----------------------------------------------------------------------
 
-//ДЛЯ СРАВНЕНИЯ ПО КАРТАМ
-
-const average = (arr) =>
-  arr.length ? arr.reduce((a, b) => a + b) / arr.length : 0; //расчет среднего значения массива
-
-const agSales = [
-  26735485, 26538413, 20581144, 19259879, 20343917, 17789947, 16615240,
-  22197891, 61950042, 25946730, 30028856, 35403025, 38892355, 32476996,
-  28820002, 29691727, 22996706, 21539188, 23895244, 20964947, 22209142,
-  24792403, 67816098, 32040374, 36046581, 40270081, 42585683, 37262234,
-];
-
-console.log(Math.min(...agSales));
-console.log(roundingWithMultiplicity(average(agSales), 2));
-console.log(Math.max(...agSales));
-
 //-------------------------------------------------------------------------------------
 // К навигационному меню
 // Добавление класса active при скролле
@@ -2799,3 +2808,112 @@ document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
     }
   });
 });
+
+//-------------------------------------------------------------
+//BOX-PLOT
+
+//---------------------------------------------------------------------
+
+function createComparisonBoxplot(
+  data1,
+  data2,
+  labels = ["Набор 1", "Набор 2"]
+) {
+  if (!data1 || !data2 || data1.length === 0 || data2.length === 0) return;
+
+  const trace1 = {
+    y: data1,
+    type: "box",
+    name: labels[0],
+    boxpoints: "suspectedoutliers",
+    jitter: 0.3,
+    pointpos: -1.8,
+    fillcolor: "rgba(192, 192, 192, 0.5)", // цвет заливки ящика
+    marker: {
+      color: "rgb(0, 0, 0)",
+      size: 5,
+    },
+    line: {
+      color: "rgb(0, 0, 0)",
+      width: 2,
+    },
+  };
+
+  const trace2 = {
+    y: data2,
+    type: "box",
+    name: labels[1],
+    boxpoints: "suspectedoutliers",
+    jitter: 0.3,
+    pointpos: -1.8,
+    fillcolor: "rgba(105, 105, 105, 0.5)", // цвет заливки ящика
+    marker: {
+      color: "rgb(0, 0, 0)",
+      size: 5,
+    },
+    line: {
+      color: "rgb(0, 0, 0)",
+      width: 2,
+    },
+  };
+
+  const layout = {
+    title: {
+      text: "Сравнение продаж в год по картам.",
+      font: {
+        family: "Times New Roman, Times, serif",
+        size: 16,
+        weight: "bold",
+      },
+    },
+
+    yaxis: {
+      title: {
+        text: "Сумма продаж по картам в год",
+        font: {
+          family: "Times New Roman, Times, serif",
+        },
+      },
+      tickfont: {
+        family: "Times New Roman, Times, serif",
+      },
+      gridcolor: "#eee",
+      // tickformat: ",.0f", // форматирование чисел
+      separator: " ",
+      tickprefix: "", // убираем префиксы
+      ticksuffix: "", // убираем суффиксы
+    },
+    xaxis: {
+      title: {
+        text: "",
+        font: {
+          family: "Times New Roman, Times, serif",
+        },
+      },
+      tickfont: {
+        family: "Times New Roman, Times, serif",
+      },
+      tickmode: "array",
+      tickvals: [0, 1], // меняем на [0, 1]
+      ticktext: labels, // подписи из параметра
+      tickangle: 0,
+    },
+    paper_bgcolor: "rgba(0,0,0,0)",
+    plot_bgcolor: "rgba(0,0,0,0)",
+    margin: { t: 50, r: 30, b: 80, l: 80 }, // увеличил нижний и левый margin
+    showlegend: false,
+    legend: {
+      x: 0.5,
+      y: -0.3, // опустил легенду ниже
+      xanchor: "center",
+      orientation: "h",
+    },
+  };
+
+  const config = {
+    responsive: true,
+    displayModeBar: true,
+  };
+
+  Plotly.newPlot("myBoxPlot", [trace1, trace2], layout, config);
+}
