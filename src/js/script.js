@@ -1092,8 +1092,8 @@ function modelAGF(
   }
 
   //CCF с инвестиционным периодом для расчета окупаемости
-  let paybackPeriodMonth = "В течение 7-ми лет не окупается";
-  let paybackPeriodYear = "В течение 7-ми лет не окупается";
+  let paybackPeriodMonth = flag ? "В течение 7-ми лет не окупается" : 0;
+  let paybackPeriodYear = flag ? "В течение 7-ми лет не окупается" : 0;
   const ccfWithInvestMonth = { 0: -sumInvestments };
   for (let i = 1; i <= 84; i++) {
     ccfWithInvestMonth[i] =
@@ -2145,6 +2145,10 @@ function calculate() {
     ).innerText = `${model["paybackPeriodYear"]} года`;
     // document.querySelector("#out4").classList.remove("red");
     document.querySelector("#out4").className = "black";
+  } else {
+    document.querySelector("#out4").innerText = `${model["paybackPeriodYear"]}`;
+    // document.querySelector("#out4").classList.remove("red");
+    document.querySelector("#out4").className = "black";
   }
 
   // Выводим Прирост денежных средств
@@ -2440,17 +2444,20 @@ document.addEventListener("keydown", function (event) {
 
 // При щелчке вне полей ввода выполняется расчет, в том числе при нажатии/отжатии галки Амортизации
 document.addEventListener("click", function (event) {
-  // Если клик был не по полям ввода и не по лейблам, выполнить расчет
+  // Исключаем кнопку и поля ввода
   if (
-    event.target.id !== "number1" &&
-    event.target.id !== "number2" &&
-    event.target.id !== "number3" &&
-    event.target.id !== "number4" &&
-    event.target.id !== "number5" &&
-    event.target.tagName !== "LABEL"
+    event.target.classList.contains("btn") ||
+    event.target.id === "number1" ||
+    event.target.id === "number2" ||
+    event.target.id === "number3" ||
+    event.target.id === "number4" ||
+    event.target.id === "number5" ||
+    event.target.tagName === "LABEL"
   ) {
-    calculate();
+    return; // не выполняем расчет
   }
+
+  calculate();
 });
 
 // Сбрасываем введенные значения при нажатие на Esc
