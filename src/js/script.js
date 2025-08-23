@@ -2977,129 +2977,78 @@ function createComparisonBoxplot2(
   Plotly.newPlot("myBoxPlot", [trace1, trace2, trace3, trace4], layout, config);
 }
 
-// const agSales_23 = [
-//   26735485, 26538413, 20581144, 19259879, 20343917, 17789947, 16615240,
-//   22197891, 61950042, 25946730, 30028856, 35403025, 38892355, 32476996,
-// ];
+// Создаем Таблицы Инвестиции, ДДС, Расчет карт и график Box-plot при запуске сайта
 
-// const agSales_24 = [
-//   28820002, 29691727, 22996706, 21539188, 23895244, 20964947, 22209142,
-//   24792403, 67816098, 32040374, 36046581, 40270081, 42585683, 37262234,
-// ];
+document.addEventListener("DOMContentLoaded", function () {
+  // Создаем таблицы и график при загрузке с базовыми параметрами
+  function initializePage() {
+    // Базовые параметры для инициализации
+    const defaultSquare = 0;
+    const defaultRentalRate = 0;
+    const defaultModel = modelAGF(defaultSquare, defaultRentalRate);
 
-// const agSales_25 = [
-//   73768500, 35005500, 39804300, 43739100, 45927000, 41691600, 32706000,
-//   25647300, 24011100, 25881300, 23389200, 24533100, 27431100, 31511700,
-// ];
+    // Создаем таблицу инвестиций
+    document.getElementById("invest").innerHTML = createInvestmentTable(
+      defaultModel.investment,
+      defaultSquare,
+      defaultModel.sumInvestments
+    );
 
-// createComparisonBoxplot2(agSales_23, agSales_24, agSales_25, agSales_25, [
-//   "AG 2023 г",
-//   "AG 2024 г",
-//   "AG 2025 г",
-//   "Модель >= 2026",
-// ]);
+    // Создаем таблицу ДДС
+    document.getElementById("cashFlow").innerHTML = createCashFlowTable(
+      defaultModel.ccf,
+      defaultModel.operating,
+      defaultModel.credit,
+      defaultModel.inv,
+      defaultModel.cf
+    );
 
-//BOX-PLOT на 2 ряда
-// function createComparisonBoxplot(
-//   data1,
-//   data2,
-//   labels = ["Набор 1", "Набор 2"]
-// ) {
-//   if (!data1 || !data2 || data1.length === 0 || data2.length === 0) return;
+    // Создаем таблицу продаж карт
+    createSalesTable(defaultModel.headSalesCards, defaultModel.saleCards);
 
-//   const trace1 = {
-//     y: data1,
-//     type: "box",
-//     name: labels[0],
-//     boxpoints: "suspectedoutliers",
-//     jitter: 0.3,
-//     pointpos: -1.8,
-//     fillcolor: "rgba(192, 192, 192, 0.5)", // цвет заливки ящика
-//     marker: {
-//       color: "rgb(0, 0, 0)",
-//       size: 5,
-//     },
-//     line: {
-//       color: "rgb(0, 0, 0)",
-//       width: 2,
-//     },
-//   };
+    // Создаем box-plot с базовыми данными
+    const comparisonData = [];
+    for (let key in defaultModel.saleCards) {
+      comparisonData.push(defaultModel.saleCards[key].at(-1));
+    }
 
-//   const trace2 = {
-//     y: data2,
-//     type: "box",
-//     name: labels[1],
-//     boxpoints: "suspectedoutliers",
-//     jitter: 0.3,
-//     pointpos: -1.8,
-//     fillcolor: "rgba(105, 105, 105, 0.5)", // цвет заливки ящика
-//     marker: {
-//       color: "rgb(0, 0, 0)",
-//       size: 5,
-//     },
-//     line: {
-//       color: "rgb(0, 0, 0)",
-//       width: 2,
-//     },
-//   };
+    const agSales_23 = [
+      26735485, 26538413, 20581144, 19259879, 20343917, 17789947, 16615240,
+      22197891, 61950042, 25946730, 30028856, 35403025, 38892355, 32476996,
+    ];
 
-//   const layout = {
-//     title: {
-//       text: "Сравнение продаж в год по картам.",
-//       font: {
-//         family: "Times New Roman, Times, serif",
-//         size: 16,
-//         weight: "bold",
-//       },
-//     },
+    const agSales_24 = [
+      28820002, 29691727, 22996706, 21539188, 23895244, 20964947, 22209142,
+      24792403, 67816098, 32040374, 36046581, 40270081, 42585683, 37262234,
+    ];
 
-//     yaxis: {
-//       title: {
-//         text: "Сумма продаж по картам в год",
-//         font: {
-//           family: "Times New Roman, Times, serif",
-//         },
-//       },
-//       tickfont: {
-//         family: "Times New Roman, Times, serif",
-//       },
-//       gridcolor: "#eee",
-//       // tickformat: ",.0f", // форматирование чисел
-//       separator: " ",
-//       tickprefix: "", // убираем префиксы
-//       ticksuffix: "", // убираем суффиксы
-//     },
-//     xaxis: {
-//       title: {
-//         text: "",
-//         font: {
-//           family: "Times New Roman, Times, serif",
-//         },
-//       },
-//       tickfont: {
-//         family: "Times New Roman, Times, serif",
-//       },
-//       tickmode: "array",
-//       tickvals: [0, 1], // меняем на [0, 1]
-//       ticktext: labels, // подписи из параметра
-//       tickangle: 0,
-//     },
-//     paper_bgcolor: "rgba(0,0,0,0)",
-//     plot_bgcolor: "rgba(0,0,0,0)",
-//     margin: { t: 50, r: 30, b: 80, l: 80 }, // увеличил нижний и левый margin
-//     showlegend: false,
-//     legend: {
-//       x: 0.5,
-//       y: -0.3, // опустил легенду ниже
-//       xanchor: "center",
-//       orientation: "h",
-//     },
-//   };
+    const agSales_25 = [
+      73768500, 35005500, 39804300, 43739100, 45927000, 41691600, 32706000,
+      25647300, 24011100, 25881300, 23389200, 24533100, 27431100, 31511700,
+    ];
 
-//   const config = {
-//     responsive: true,
-//     displayModeBar: true,
-//   };
+    createComparisonBoxplot2(
+      agSales_23,
+      agSales_24,
+      agSales_25,
+      comparisonData,
+      ["AG 2023 г", "AG 2024 г", "AG 2025 г", "Модель ≥ 2026"]
+    );
+  }
 
-//   Plotly.newPlot("myBoxPlot", [trace1, trace2], layout, config);
-// }
+  // Вызываем инициализацию при загрузке
+  initializePage();
+
+  // Сохраняем обработчики событий
+  document.addEventListener("keypress", function (e) {
+    if (e.key === "Enter") {
+      calculate(); // Вызываем calculate, а не initializePage
+    }
+  });
+
+  document.addEventListener("click", function (e) {
+    if (!e.target.matches("input") && !e.target.classList.contains("btn")) {
+      calculate(); // Вызываем calculate для обновления
+    }
+  });
+});
