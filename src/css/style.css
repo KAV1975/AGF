@@ -1161,6 +1161,7 @@ html {
   }
 }
 
+/* Ваши существующие стили - НЕ ТРОГАЕМ */
 h2 {
   font-weight: bold;
 }
@@ -1171,6 +1172,147 @@ h3 {
 
 h4 {
   font-weight: bold;
+}
+
+.text-block {
+  font-family: inherit;
+  line-height: 1.6;
+  color: #333;
+}
+
+.text-block h2,
+.text-block h3,
+.text-block h4 {
+  color: #000;
+  margin: 1.5rem 0 1rem 0;
+}
+
+.anchor-link,
+.anchor-link-title {
+  text-decoration: underline;
+  color: inherit;
+  cursor: pointer;
+  transition: opacity 0.2s ease;
+}
+
+.anchor-link:hover,
+.anchor-link-title:hover {
+  opacity: 0.7;
+  text-decoration: underline;
+}
+
+.anchor-link-title {
+  display: block;
+  margin: 1.5rem 0 1rem 0;
+}
+
+.text-block p {
+  margin: 0.8rem 0;
+  text-align: justify;
+}
+
+.text-block ul {
+  margin: 0.5rem 0;
+  padding-left: 1.5rem;
+}
+
+.text-block li {
+  margin: 0.3rem 0;
+}
+
+.text-block ul ul {
+  margin: 0.3rem 0;
+  padding-left: 1.5rem;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+  .text-block {
+    font-size: 14px;
+    line-height: 1.5;
+    padding: 0 10px;
+  }
+
+  .text-block h2 {
+    font-size: 1.4rem;
+    margin: 1.2rem 0 0.8rem 0;
+  }
+
+  .text-block h3,
+  .text-block h4 {
+    font-size: 1.2rem;
+    margin: 1rem 0 0.8rem 0;
+  }
+
+  .text-block p {
+    margin: 0.6rem 0;
+  }
+
+  .text-block ul {
+    padding-left: 1.2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .text-block {
+    font-size: 13px;
+  }
+
+  .text-block h2 {
+    font-size: 1.3rem;
+  }
+
+  .text-block h3,
+  .text-block h4 {
+    font-size: 1.1rem;
+  }
+
+  .text-block ul {
+    padding-left: 1rem;
+  }
+
+  .text-block {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    hyphens: auto;
+  }
+}
+
+.container-left,
+.container-right {
+  width: 100%;
+}
+
+@media (min-width: 769px) {
+  .container-left,
+  .container-right {
+    width: 50%;
+    float: left;
+    padding: 0 15px;
+    box-sizing: border-box;
+  }
+
+  .container-left::after,
+  .container-right::after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
+@media (max-width: 320px) {
+  .text-block {
+    font-size: 12px;
+  }
+
+  .text-block h2 {
+    font-size: 1.2rem;
+  }
+
+  .text-block h3,
+  .text-block h4 {
+    font-size: 1rem;
+  }
 }
 
 .anchor-link-contacts {
