@@ -1161,7 +1161,7 @@ html {
   }
 }
 
-/* Ваши существующие стили - НЕ ТРОГАЕМ */
+/* Существующие стили - НЕ ТРОГАЕМ */
 h2 {
   font-weight: bold;
 }
@@ -1348,4 +1348,368 @@ h4 {
 .disclaimer p {
   margin: 0;
   line-height: 1.4;
+}
+
+/* ===== ОСНОВНЫЕ АДАПТИВНЫЕ СТИЛИ ===== */
+@media (max-width: 1200px) {
+  .top-section {
+    width: 98%;
+    margin-left: 1%;
+  }
+}
+
+@media (max-width: 992px) {
+  .top-section {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .container-left,
+  .container-right {
+    width: 100% !important;
+    float: none;
+  }
+
+  /* Графики на планшетах */
+  .chart_ {
+    max-height: 350px;
+    min-height: 300px;
+  }
+}
+
+@media (max-width: 768px) {
+  body {
+    padding-top: 60px;
+  }
+
+  /* Навигационное меню */
+  .nav-menu__list {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+
+  .nav-menu__list-item {
+    flex: 0 0 calc(50% - 10px);
+    margin-bottom: 5px;
+  }
+
+  .nav-menu__list-item a {
+    font-size: 12px;
+    padding: 10px 5px;
+    text-align: center;
+  }
+
+  /* Формы ввода */
+  .input-area {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+
+  .input-area label {
+    min-width: 100%;
+    margin-bottom: 5px;
+  }
+
+  .input-area input {
+    width: 100% !important;
+  }
+
+  #number1,
+  #number2,
+  #number4,
+  #number5 {
+    width: 100% !important;
+  }
+
+  /* Вывод данных */
+  .out-area p {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+    height: auto;
+    padding: 10px 0;
+  }
+
+  .value-group {
+    min-width: 100% !important;
+    justify-content: flex-start !important;
+  }
+
+  /* Текстовые блоки */
+  .text-block {
+    padding: 15px 10px;
+    font-size: 14px;
+  }
+
+  .text-block h2 {
+    font-size: 1.3rem;
+  }
+
+  .text-block h3 {
+    font-size: 1.2rem;
+  }
+
+  .text-block h4 {
+    font-size: 1.1rem;
+  }
+
+  /* Графики */
+  .chart_ {
+    max-height: 300px;
+    min-height: 250px;
+  }
+
+  /* Кнопки */
+  .btn,
+  .contacts-button {
+    font-size: 1.2rem;
+    padding: 0.4rem;
+    height: 45px;
+  }
+}
+
+@media (max-width: 576px) {
+  /* Навигация */
+  .nav-menu__list-item {
+    flex: 0 0 100%;
+  }
+
+  .nav-menu__list-item a {
+    font-size: 11px;
+    padding: 8px 3px;
+  }
+
+  /* Заголовки */
+  h1 {
+    font-size: 1.2rem;
+    height: 40px;
+    padding: 0.3rem;
+  }
+
+  /* Таблицы */
+  .table-container {
+    margin: 10px 0;
+    overflow-x: auto;
+  }
+
+  table {
+    font-size: 11px;
+    min-width: 600px;
+  }
+
+  th,
+  td {
+    padding: 6px 3px;
+  }
+
+  /* Графики */
+  .chart_ {
+    max-height: 250px;
+    min-height: 200px;
+  }
+
+  /* Текст */
+  .text-block {
+    font-size: 13px;
+    line-height: 1.4;
+  }
+
+  .text-block h2 {
+    font-size: 1.2rem;
+  }
+
+  .text-block h3 {
+    font-size: 1.1rem;
+  }
+
+  .text-block h4 {
+    font-size: 1rem;
+  }
+
+  /* Формы */
+  .input-area {
+    margin-bottom: 12px;
+  }
+
+  input {
+    padding: 8px;
+    font-size: 14px; /* Увеличиваем для удобства на мобильных */
+  }
+
+  /* Чекбокс */
+  .checkbox-area {
+    gap: 10px;
+  }
+
+  #myCheckbox {
+    width: 20px;
+    height: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  body {
+    padding-top: 50px;
+  }
+
+  /* Навигация */
+  .top-section1 {
+    width: 100%;
+  }
+
+  .nav-menu__list-item a {
+    font-size: 10px;
+    padding: 6px 2px;
+  }
+
+  /* Заголовки графиков */
+  .chartjs-size-monitor,
+  .chartjs-render-monitor {
+    transform: scale(0.9);
+    transform-origin: center;
+  }
+
+  /* Текстовые блоки */
+  .text-block {
+    padding: 12px 8px;
+    font-size: 12px;
+  }
+
+  .text-block ul {
+    padding-left: 1rem;
+  }
+
+  /* Кнопки */
+  .btn,
+  .contacts-button {
+    font-size: 1.1rem;
+    height: 40px;
+  }
+
+  /* Футер */
+  .disclaimer {
+    font-size: 11px;
+    padding: 10px;
+  }
+}
+
+@media (max-width: 360px) {
+  /* Экстремально маленькие экраны */
+  .text-block {
+    font-size: 11px;
+  }
+
+  .text-block h2 {
+    font-size: 1.1rem;
+  }
+
+  .text-block h3 {
+    font-size: 1rem;
+  }
+
+  .nav-menu__list-item a {
+    font-size: 9px;
+    padding: 5px 1px;
+  }
+
+  .chart_ {
+    max-height: 200px;
+    min-height: 180px;
+  }
+}
+
+/* ===== СПЕЦИФИЧНЫЕ ИСПРАВЛЕНИЯ ДЛЯ ГРАФИКОВ ===== */
+@media (max-width: 768px) {
+  /* Chart.js адаптация */
+  .chartjs-render-monitor {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  /* Контейнеры для графиков */
+  .container-left,
+  .container-right {
+    overflow: hidden;
+  }
+}
+
+/* ===== УЛУЧШЕНИЯ ДЛЯ ТАБЛИЦ ===== */
+@media (max-width: 768px) {
+  /* Принудительная горизонтальная прокрутка для таблиц */
+  .table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin: 15px -10px;
+    padding: 0 10px;
+  }
+
+  /* Улучшение читаемости таблиц */
+  #calculatingSales,
+  #salesTable,
+  #ProfitAndLoss {
+    font-size: 11px;
+  }
+
+  #calculatingSales th,
+  #calculatingSales td,
+  #salesTable th,
+  #salesTable td {
+    padding: 4px 2px;
+  }
+}
+
+/* ===== УЛУЧШЕНИЯ ДЛЯ ФОРМ ===== */
+@media (max-width: 768px) {
+  /* Увеличиваем область клика для инпутов */
+  input[type="number"],
+  input[type="text"] {
+    min-height: 44px; /* Минимальный размер для удобного касания */
+    font-size: 16px; /* Предотвращает zoom в iOS */
+  }
+
+  /* Чекбокс большего размера */
+  #myCheckbox {
+    width: 22px;
+    height: 22px;
+    min-width: 22px;
+  }
+}
+
+/* ===== ПРЕДОТВРАЩЕНИЕ ГИГАНТСКИХ ШРИФТОВ НА IOS ===== */
+@media (max-width: 768px) {
+  input,
+  select,
+  textarea {
+    font-size: 16px !important; /* Фиксированный размер для iOS */
+  }
+}
+
+/* ===== ПЛАВНЫЕ ПЕРЕХОДЫ ===== */
+.container-left,
+.container-right,
+.text-block,
+.chart_,
+.table-container {
+  transition: all 0.3s ease;
+}
+
+/* ===== УЛУЧШЕНИЯ ДОСТУПНОСТИ ===== */
+@media (max-width: 768px) {
+  /* Увеличиваем область клика для ссылок */
+  .anchor-link,
+  .anchor-link-title {
+    min-height: 44px;
+    display: flex;
+    align-items: center;
+    padding: 5px 0;
+  }
+
+  /* Улучшаем видимость фокуса */
+  a:focus,
+  button:focus,
+  input:focus {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+  }
 }
