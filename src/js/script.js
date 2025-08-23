@@ -2419,9 +2419,9 @@ function calculate() {
   ];
 
   createComparisonBoxplot2(agSales_23, agSales_24, agSales_25, comparisonData, [
-    "AG 2023 г",
-    "AG 2024 г",
-    "AG 2025 г",
+    "AGYM 2023 г",
+    "AGYM 2024 г",
+    "AGYM 2025 г",
     "Модель ≥ 2026 г",
   ]);
 }
@@ -2918,7 +2918,7 @@ function createComparisonBoxplot2(
 
   const layout = {
     title: {
-      text: "Сравнение продаж в год по картам.",
+      text: "Сравнение продаж по картам",
       font: {
         family: "Times New Roman, Times, serif",
         size: 16,
@@ -3032,7 +3032,7 @@ document.addEventListener("DOMContentLoaded", function () {
       agSales_24,
       agSales_25,
       comparisonData,
-      ["AG 2023 г", "AG 2024 г", "AG 2025 г", "Модель ≥ 2026"]
+      ["AGYM 2023 г", "AGYM 2024 г", "AGYM 2025 г", "Модель ≥ 2026"]
     );
   }
 

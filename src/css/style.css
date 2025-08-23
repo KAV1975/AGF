@@ -1160,3 +1160,50 @@ html {
     min-width: 60px;
   }
 }
+
+h2 {
+  font-weight: bold;
+}
+
+h3 {
+  font-weight: bold;
+}
+
+h4 {
+  font-weight: bold;
+}
+
+.anchor-link-contacts {
+  font-weight: bold;
+  border: none;
+  border-radius: 0.3rem;
+  border: 2px solid #000000;
+  width: 100%;
+  background-color: #000000;
+  color: #ffffff;
+  font-size: 1.5rem;
+  font-family: inherit;
+  font-weight: bold;
+  padding: 0.5rem 0.5rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 50px;
+  box-sizing: border-box;
+  margin: 0 0 20px 0;
+}
+
+.disclaimer {
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  padding: 15px;
+  border-top: 1px solid #eee;
+  margin-top: 30px;
+}
+
+.disclaimer p {
+  margin: 0;
+  line-height: 1.4;
+}
