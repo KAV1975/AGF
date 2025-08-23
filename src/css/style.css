@@ -418,6 +418,7 @@ html {
 }
 
 body {
+  padding-top: 70px; /* Добавлена строка */
   line-height: 1;
 }
 
@@ -1711,5 +1712,16 @@ h4 {
   input:focus {
     outline: 2px solid #0066cc;
     outline-offset: 2px;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 80px; /* Отступ при скролле к якорям */
+}
+
+@media (max-width: 768px) {
+  html {
+    scroll-padding-top: 70px; /* Меньший отступ для мобильных */
   }
 }
