@@ -455,7 +455,7 @@ table {
 
 .top-section {
   width: 95%;
-  margin-left: 1%;
+  margin-left: 
   margin-bottom: 1%;
   display: flex;
   gap: 20px;
@@ -467,8 +467,11 @@ table {
   }
   .top-section {
     flex-direction: column;
-    margin-top: 150px; /*Добавляем отступ сверху равный высоте навигации*/
-    /* padding-top: 10px; Дополнительный небольшой отступ */
+    margin-top: 150px; 
+    width: 100%; 
+    margin-left: 0;
+    margin-right: 0;    
+   
   }
   .top-section .container-left,
   .top-section .container-right {
@@ -740,6 +743,8 @@ h1 {
   height: 50px;
   box-sizing: border-box;
   margin: 0 0 20px 0;
+  text-align: center; /* Центрирование текста */
+  line-height: 1.2; /* Межстрочный интервал для многострочного текста */
 }
 
 .input {
@@ -1009,13 +1014,13 @@ span #out2 {
   position: fixed;
   top: 0;
   left: 0;
-  width: 95%;
+  width: 100%;
   background-color: #dcdcdc;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
   z-index: 1000;
 }
 .top-section1__nav-container {
-  width: 100%;
+  width: 95%;
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
@@ -1403,6 +1408,7 @@ h4 {
 }
 
 @media (max-width: 320px) {
+
   .text-block {
     font-size: 12px;
   }
@@ -1710,6 +1716,10 @@ h4 {
 }
 
 @media (max-width: 360px) {
+  h1 {
+    font-size: 1.2rem;
+    padding: 0.7rem 0.4rem;
+  }
   /* Экстремально маленькие экраны */
   .text-block {
     font-size: 11px;
