@@ -2076,19 +2076,18 @@ const myChart4 = new Chart(ctx4, {
 
 //--------------------------------------------------------
 // ДОРАБОТАТЬ В ТАКОМ ВАРИАНТЕ ЛОМАЮТСЯ ЗАПОЛНЕЕНИЯ ТАБЛИЦ И ОТРАЖЕНИЕ ДЕЙСТВИТЕЛЬНОТСИ НА ГРАФИКАХ
-// Функция для адаптации графиков
+// Функция для адаптации графиков (ТОЛЬКО настройки, БЕЗ обновления)
+
 // function adaptChartsForMobile() {
 //   const isMobile = window.innerWidth <= 480;
 //   const isSmallMobile = window.innerWidth <= 320;
 
 //   const charts = [myChart, myChart1, myChart2, myChart3, myChart4].filter(
-//     (chart) => chart !== undefined
+//     (chart) => chart !== undefined && chart !== null
 //   );
 
-//   // const charts = [myChart, myChart1, myChart2, myChart3, myChart4];
-
 //   charts.forEach((chart) => {
-//     if (chart && typeof chart.update === "function") {
+//     if (chart && typeof chart.options === "object") {
 //       // Обновляем размер шрифта заголовка
 //       if (chart.options.plugins && chart.options.plugins.title) {
 //         chart.options.plugins.title.font =
@@ -2107,42 +2106,88 @@ const myChart4 = new Chart(ctx4, {
 //         }
 //       }
 
-//       // Обновляем шрифты осей - ИСПРАВЛЕННАЯ ЧАСТЬ
-//       if (chart.options.scales && chart.options.scales.y) {
-//         chart.options.scales.y.ticks = chart.options.scales.y.ticks || {};
-//         chart.options.scales.y.ticks.font =
-//           chart.options.scales.y.ticks.font || {};
-//         chart.options.scales.y.ticks.font.size = isMobile ? 10 : 12;
-//       }
+//       // Обновляем шрифты осей
+//       if (chart.options.scales) {
+//         if (chart.options.scales.y) {
+//           chart.options.scales.y.ticks = chart.options.scales.y.ticks || {};
+//           chart.options.scales.y.ticks.font =
+//             chart.options.scales.y.ticks.font || {};
+//           chart.options.scales.y.ticks.font.size = isMobile ? 10 : 12;
 
-//       if (chart.options.scales && chart.options.scales.x) {
-//         chart.options.scales.x.ticks = chart.options.scales.x.ticks || {};
-//         chart.options.scales.x.ticks.font =
-//           chart.options.scales.x.ticks.font || {};
-//         chart.options.scales.x.ticks.font.size = isMobile ? 10 : 12;
-//       }
+//           if (chart.options.scales.y.title) {
+//             chart.options.scales.y.title.font =
+//               chart.options.scales.y.title.font || {};
+//             chart.options.scales.y.title.font.size = isMobile ? 10 : 12;
+//           }
+//         }
 
-//       // Принудительно обновляем график после изменения настроек
-//       chart.update();
+//         if (chart.options.scales.x) {
+//           chart.options.scales.x.ticks = chart.options.scales.x.ticks || {};
+//           chart.options.scales.x.ticks.font =
+//             chart.options.scales.x.ticks.font || {};
+//           chart.options.scales.x.ticks.font.size = isMobile ? 10 : 12;
+
+//           if (chart.options.scales.x.title) {
+//             chart.options.scales.x.title.font =
+//               chart.options.scales.x.title.font || {};
+//             chart.options.scales.x.title.font.size = isMobile ? 10 : 12;
+//           }
+//         }
+//       }
 //     }
 //   });
 // }
 
+// // Функция для применения адаптации и обновления графиков
+// function applyChartAdaptation() {
+//   adaptChartsForMobile();
+
+//   const charts = [myChart, myChart1, myChart2, myChart3, myChart4].filter(
+//     (chart) => chart !== undefined && chart !== null
+//   );
+
+//   charts.forEach((chart) => {
+//     if (chart && typeof chart.update === "function") {
+//       try {
+//         // Используем 'none' чтобы избежать триггера событий
+//         chart.update("none");
+//       } catch (e) {
+//         console.warn("Chart update error:", e);
+//       }
+//     }
+//   });
+// }
+
+// // Функция debounce для ограничения частоты вызовов
+// function debounce(func, wait) {
+//   let timeout;
+//   return function executedFunction(...args) {
+//     const later = () => {
+//       clearTimeout(timeout);
+//       func(...args);
+//     };
+//     clearTimeout(timeout);
+//     timeout = setTimeout(later, wait);
+//   };
+// }
+
+// // Создаем debounced версию функции
+// const debouncedApplyAdaptation = debounce(applyChartAdaptation, 150);
+
 // // Инициализация при загрузке
 // window.addEventListener("load", function () {
-//   adaptChartsForMobile();
-//   window.addEventListener("resize", adaptChartsForMobile);
+//   applyChartAdaptation();
+//   // Используем debounced версию для resize
+//   window.addEventListener("resize", debouncedApplyAdaptation);
 // });
 
 // // Модифицируем функцию updateChart
 // const originalUpdateChart = updateChart;
 // updateChart = function (chart, dataNew_1, dataNew_2) {
 //   originalUpdateChart(chart, dataNew_1, dataNew_2);
-//   adaptChartsForMobile();
-//   // Принудительно обновляем график после адаптации
-//   if (chart && typeof chart.update === "function") {
-//     chart.update();
-//   }
+
+//   // Отдельно применяем адаптацию и обновление
+//   debouncedApplyAdaptation();
 // };
 
 //-------------------------------------------------------------
