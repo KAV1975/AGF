@@ -1422,6 +1422,10 @@ h4 {
     font-size: 1rem;
   }
 }
+.contacts-button{
+margin-bottom: 20px;
+}
+
 
 .anchor-link-contacts {
   font-weight: bold;
@@ -1441,7 +1445,7 @@ h4 {
   justify-content: center;
   height: 50px;
   box-sizing: border-box;
-  margin: 0 0 20px 0;
+  margin: 0 0 10px 0;
 }
 
 .disclaimer {
@@ -1450,7 +1454,7 @@ h4 {
   text-align: center;
   padding: 15px;
   border-top: 1px solid #eee;
-  margin-top: 30px;
+  margin-top: 10px;
 }
 
 .disclaimer p {
@@ -1844,8 +1848,50 @@ html {
   scroll-padding-top: 80px; /* Отступ при скролле к якорям */
 }
 
+
+/*---------------ДЛЯ АДАПТАЦИИ ГРАФИКОВ----------------*/
+/* Базовые стили для контейнеров графиков */
+.chart-container {
+  position: relative;
+  height: 400px;
+  width: 100%;
+}
+
 @media (max-width: 768px) {
-  html {
-    scroll-padding-top: 70px; /* Меньший отступ для мобильных */
+  .chart-container {
+    height: 350px;
   }
+}
+
+@media (max-width: 480px) {
+  .chart-container {
+    height: 300px;
+  }
+  
+  .chartjs-render-monitor {
+    font-size: 10px !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .chart-container {
+    height: 250px;
+  }
+}
+
+@media (max-width: 320px) {
+  .chart-container {
+    height: 220px;
+  }
+  
+  /* Скрываем легенду на очень маленьких экранах */
+  .chartjs-legend {
+    display: none !important;
+  }
+}
+
+/* Улучшаем читаемость текста на мобильных */
+.chartjs-title {
+  text-align: center;
+  word-wrap: break-word;
 }
