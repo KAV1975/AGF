@@ -8,6 +8,40 @@ let square -плошадь Помещения вводимое значение.
 let keyRate -Ключевая ставка. Впринципе можно брать с внешнего источника. Если ввод. Важно: при вводе учитывать % или число!. ПРИ ВВОДЕ НАПИСАТЬ ПРОВЕРКУ НА >= 0 И ЧИСЛОВОЙ ТИП
   */
 
+//--------------------------------------------------------------------
+//КОД ДЛЯ ПОЛУЧЕНИЯ КЛЮЧЕВОЙ СТАВКИ, автоматизировано на github
+
+console.log("Пытаюсь загрузить данные ставки...");
+console.log("URL:", "./data/key_rate.json");
+
+fetch("./data/key_rate.json")
+  .then((response) => {
+    console.log("Статус ответа:", response.status);
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then((data) => {
+    console.log("Данные получены:", data);
+    console.log("Ключевая ставка ЦБ на", data.date, ":", data.value, "%");
+  })
+  .catch((error) => {
+    console.error("Полная ошибка:", error);
+  });
+
+// Простой fetch из папки 'data'
+// fetch('./data/key_rate.json')
+//   .then(response => response.json())
+//   .then(data => {
+//     console.log('Ключевая ставка ЦБ на', data.date, ':', data.value, '%');
+//     // Используйте data.value в ваших вычислениях
+//     calculateSomething(data.value);
+//   })
+//   .catch(error => console.error('Не удалось загрузить данные о ставке:', error));
+
+//--------------------------------------------------------------------------------
+
 //Вспомагательные функции
 
 // Формула округления с определенной кратностью вниз
