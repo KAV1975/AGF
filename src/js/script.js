@@ -8,40 +8,6 @@ let square -плошадь Помещения вводимое значение.
 let keyRate -Ключевая ставка. Впринципе можно брать с внешнего источника. Если ввод. Важно: при вводе учитывать % или число!. ПРИ ВВОДЕ НАПИСАТЬ ПРОВЕРКУ НА >= 0 И ЧИСЛОВОЙ ТИП
   */
 
-//--------------------------------------------------------------------
-//КОД ДЛЯ ПОЛУЧЕНИЯ КЛЮЧЕВОЙ СТАВКИ, автоматизировано на github
-
-console.log("Пытаюсь загрузить данные ставки...");
-console.log("URL:", "./data/key_rate.json");
-
-fetch("./data/key_rate.json")
-  .then((response) => {
-    console.log("Статус ответа:", response.status);
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    return response.json();
-  })
-  .then((data) => {
-    console.log("Данные получены:", data);
-    console.log("Ключевая ставка ЦБ на", data.date, ":", data.value, "%");
-  })
-  .catch((error) => {
-    console.error("Полная ошибка:", error);
-  });
-
-// Простой fetch из папки 'data'
-// fetch('./data/key_rate.json')
-//   .then(response => response.json())
-//   .then(data => {
-//     console.log('Ключевая ставка ЦБ на', data.date, ':', data.value, '%');
-//     // Используйте data.value в ваших вычислениях
-//     calculateSomething(data.value);
-//   })
-//   .catch(error => console.error('Не удалось загрузить данные о ставке:', error));
-
-//--------------------------------------------------------------------------------
-
 //Вспомагательные функции
 
 // Формула округления с определенной кратностью вниз
@@ -62,7 +28,24 @@ const roundingWithMultiplicity = function (num, mult) {
 //ЗАДАЕМ ГРАНИЦЫ ДОПУСТИМЫХ ПЛОЩАДЕЙ И КЛЮЧЕВУЮ СТАВКУ (в перпективе брать в WEB)
 const left_ = 700;
 const right_ = 2500;
-const keyRate_ = 0.18;
+let keyRate_ = 0.18;
+
+//--------------------------------------------------------------------
+//КОД ДЛЯ ПОЛУЧЕНИЯ КЛЮЧЕВОЙ СТАВКИ, автоматизировано на github
+
+fetch("./data/key_rate.json")
+  .then((response) => {
+    if (!response.ok) throw new Error("Ошибка загрузки");
+    return response.json();
+  })
+  .then((data) => {
+    // Если все ОК - обновляем ключевую ставку
+    keyRate_ = data.value / 100; // преобразуем 18% в 0.18
+  })
+  .catch((error) => {
+    // Если ошибка - оставляем значение по умолчанию
+  });
+//--------------------------------------------------------------------------------
 
 // ФУНКЦИЯ МОДЕЛИ
 function modelAGF(
