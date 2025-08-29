@@ -106,11 +106,30 @@ def get_key_rate_alternative():
         response = requests.get(api_url, headers=headers, timeout=15)
         response.raise_for_status()
         
-        # Здесь нужно добавить парсинг XML ответа
-        # Это упрощенный пример -可能需要 доработки под конкретную структуру XML
+        # Парсим XML ответ для получения ключевой ставки
+        soup = BeautifulSoup(response.content, 'xml')
         
-        print("Альтернативный метод: получили ответ от API")
-        # Временное решение - возвращаем None чтобы попробовать основной метод
+        # Ищем ключевую ставку (Valute с ID="R01235")
+        key_rate = soup.find('Valute', {'ID': 'R01235'})
+        if key_rate:
+            value = key_rate.find('Value').get_text(strip=True)
+            nominal = key_rate.find('Nominal').get_text(strip=True)
+            
+            # Конвертируем в число
+            rate_value = float(value.replace(',', '.')) / float(nominal)
+            
+            # Получаем дату из атрибута
+            date_str = soup.find('ValCurs').get('Date')
+            date_obj = datetime.strptime(date_str, '%d.%m.%Y')
+            formatted_date = date_obj.strftime('%Y-%m-%d')
+            
+            return {
+                "date": formatted_date,
+                "value": rate_value,
+                "updated_at": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+            }
+        
+        print("Не удалось найти ключевую ставку в XML ответе")
         return None
         
     except Exception as e:
@@ -139,6 +158,7 @@ if __name__ == "__main__":
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(key_rate_data, f, ensure_ascii=False, indent=2)
         print(f"Ключевая ставка успешно сохранена в {file_path}: {key_rate_data}")
+        exit(0)  # Успешное завершение
     else:
         print("Не удалось получить ключевую ставку. Файл не будет обновлен.")
         # Можно выйти с ошибкой, чтобы Action пометился как failed

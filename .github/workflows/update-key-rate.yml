@@ -2,16 +2,16 @@ name: Update Key Rate Data
 
 on:
   schedule:
-    # Запускается каждый день в 14:00 по UTC (в 17:00 по Москве, UTC+3).
-    - cron: '0 14 * * *'
+    # Запускается каждый день в 07:00 по UTC (в 10:00 по Москве, UTC+3).
+    - cron: "0 7 * * *"
   workflow_dispatch: # Опционально: позволяет запускать действие вручную
   push:
-    branches: [ main ] # запускать при пуше в главную ветку
+    branches: [main] # запускать при пуше в главную ветку
 
 jobs:
   fetch-key-rate:
     runs-on: ubuntu-latest
-    permissions: 
+    permissions:
       contents: write # Даем разрешение на запись в репозиторий
 
     steps:
@@ -21,7 +21,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.10'
+          python-version: "3.10"
 
       - name: Install dependencies
         run: pip install requests beautifulsoup4
