@@ -3174,3 +3174,11 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   });
 });
+
+// Вставка количества лет работы AGYM
+const openDate = new Date(2011, 11, 21, 18, 0, 0); // Дата открытия первого Атлетик
+const now_ = new Date(); // Текущая дата
+const deltaDate = now_.getTime() - openDate.getTime(); // Разница текущая минус дата открытия первого Атлетьика в милисекундах
+const deltaYear = Math.floor(deltaDate / 1000 / (60 * 60 * 24) / 365);
+
+document.getElementById("agOpen").textContent = deltaYear;
