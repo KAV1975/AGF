@@ -1943,3 +1943,245 @@ body.privacy-page .main p {
     text-align: left; /* На мобильных убираем выравнивание по ширине */
   }
 }
+
+/* ==================== СТИЛИ ДЛЯ ФОРМЫ BITRIX24 ==================== */
+
+/* Основной контейнер формы */
+#b24-form-container {
+  width: 100%;
+  max-width: 500px;
+  margin: 20px auto;
+  padding: 0;
+}
+
+/* Обертка формы Bitrix24 */
+#b24-form-container .b24-form-wrapper {
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 25px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+  border: 1px solid #e0e0e0;
+}
+
+/* Заголовок формы */
+#b24-form-container .b24-form-header {
+  text-align: center;
+  margin-bottom: 25px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #000000;
+}
+
+#b24-form-container .b24-form-header-title {
+  color: #000000 !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  margin: 0 !important;
+  font-family: inherit !important;
+}
+
+/* Поля формы */
+#b24-form-container .b24-form-field {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+#b24-form-container .b24-form-field-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #000000 !important;
+  font-weight: 600 !important;
+  font-size: 14px !important;
+  font-family: inherit !important;
+}
+
+#b24-form-container .b24-form-control {
+  width: 100% !important;
+  padding: 14px 16px !important;
+  border: 2px solid #000000 !important;
+  border-radius: 6px !important;
+  font-size: 16px !important;
+  font-family: inherit !important;
+  color: #000000 !important;
+  background: #ffffff !important;
+  transition: all 0.3s ease !important;
+  box-sizing: border-box !important;
+}
+
+#b24-form-container .b24-form-control:focus {
+  outline: none !important;
+  border-color: #000000 !important;
+  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* Кнопка отправки - ЧЕРНАЯ */
+#b24-form-container .b24-form-btn {
+  width: 100% !important;
+  padding: 16px !important;
+  background: #000000 !important;
+  color: #ffffff !important;
+  border: 2px solid #000000 !important;
+  border-radius: 6px !important;
+  font-size: 16px !important;
+  font-weight: 700 !important;
+  font-family: inherit !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+}
+
+#b24-form-container .b24-form-btn:hover {
+  background: #333333 !important;
+  border-color: #333333 !important;
+  transform: translateY(-1px);
+}
+
+#b24-form-container .b24-form-btn:active {
+  transform: translateY(0);
+}
+
+/* Сообщения об ошибках */
+#b24-form-container .b24-form-field-error {
+  color: #dc3545 !important;
+  font-size: 12px !important;
+  margin-top: 5px !important;
+  font-weight: 500 !important;
+}
+
+/* Успешное сообщение */
+#b24-form-container .b24-form-success {
+  background: #d4edda !important;
+  border: 1px solid #c3e6cb !important;
+  color: #155724 !important;
+  padding: 15px !important;
+  border-radius: 6px !important;
+  text-align: center !important;
+  margin-top: 20px !important;
+}
+
+/* Чекбоксы и радиокнопки */
+#b24-form-container .b24-form-checkbox-label,
+#b24-form-container .b24-form-radio-label {
+  color: #000000 !important;
+  font-weight: 500 !important;
+  font-family: inherit !important;
+}
+
+/* Адаптивность для мобильных устройств */
+@media (max-width: 768px) {
+  #b24-form-container {
+    max-width: 100%;
+    margin: 15px auto;
+    padding: 0 10px;
+  }
+
+  #b24-form-container .b24-form-wrapper {
+    padding: 20px;
+    border-radius: 10px;
+  }
+
+  #b24-form-container .b24-form-header-title {
+    font-size: 1.3rem !important;
+  }
+
+  #b24-form-container .b24-form-control {
+    padding: 12px 14px !important;
+    font-size: 16px !important; /* Фиксированный размер для iOS */
+  }
+
+  #b24-form-container .b24-form-btn {
+    padding: 14px !important;
+    font-size: 15px !important;
+  }
+
+  #b24-form-container .b24-form-field {
+    margin-bottom: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  #b24-form-container .b24-form-wrapper {
+    padding: 15px;
+    border-radius: 8px;
+  }
+
+  #b24-form-container .b24-form-header-title {
+    font-size: 1.2rem !important;
+  }
+
+  #b24-form-container .b24-form-control {
+    padding: 12px !important;
+  }
+
+  #b24-form-container .b24-form-btn {
+    padding: 12px !important;
+    font-size: 14px !important;
+  }
+
+  #b24-form-container .b24-form-field-label {
+    font-size: 13px !important;
+  }
+}
+
+/* Особые стили для очень маленьких экранов */
+@media (max-width: 360px) {
+  #b24-form-container {
+    padding: 0 5px;
+  }
+
+  #b24-form-container .b24-form-wrapper {
+    padding: 12px;
+  }
+
+  #b24-form-container .b24-form-control {
+    padding: 10px !important;
+    font-size: 14px !important;
+  }
+}
+
+/* Гарантия, что форма не сломает верстку */
+#b24-form-container * {
+  box-sizing: border-box !important;
+  max-width: 100% !important;
+}
+
+/* Убираем стандартные стили Bitrix24 */
+#b24-form-container .b24-form-content {
+  all: initial !important;
+  display: block !important;
+  font-family: inherit !important;
+}
+
+/* Исправление для темной темы */
+@media (prefers-color-scheme: dark) {
+  #b24-form-container .b24-form-wrapper {
+    background: #1a1a1a !important;
+    border-color: #333 !important;
+  }
+
+  #b24-form-container .b24-form-control {
+    background: #2a2a2a !important;
+    border-color: #000000 !important;
+    color: #ffffff !important;
+  }
+
+  #b24-form-container .b24-form-field-label {
+    color: #ffffff !important;
+  }
+}
+
+/* Анимация появления */
+@keyframes formFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+#b24-form-container .b24-form-wrapper {
+  animation: formFadeIn 0.5s ease-out;
+}
