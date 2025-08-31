@@ -2161,40 +2161,8 @@ function handleResize() {
 }
 
 window.addEventListener("resize", handleResize);
-// Вызвать initially
+
 adaptChartsForMobile();
-
-// // Функция debounce для ограничения частоты вызовов
-// function debounce(func, wait) {
-//   let timeout;
-//   return function executedFunction(...args) {
-//     const later = () => {
-//       clearTimeout(timeout);
-//       func(...args);
-//     };
-//     clearTimeout(timeout);
-//     timeout = setTimeout(later, wait);
-//   };
-// }
-
-// // Создаем debounced версию функции
-// const debouncedApplyAdaptation = debounce(applyChartAdaptation, 150);
-
-// // Инициализация при загрузке
-// window.addEventListener("load", function () {
-//   applyChartAdaptation();
-//   // Используем debounced версию для resize
-//   window.addEventListener("resize", debouncedApplyAdaptation);
-// });
-
-// // Модифицируем функцию updateChart
-// const originalUpdateChart = updateChart;
-// updateChart = function (chart, dataNew_1, dataNew_2) {
-//   originalUpdateChart(chart, dataNew_1, dataNew_2);
-
-//   // Отдельно применяем адаптацию и обновление
-//   debouncedApplyAdaptation();
-// };
 
 //-------------------------------------------------------------
 
@@ -3182,3 +3150,23 @@ const deltaDate = now_.getTime() - openDate.getTime(); // Разница тек�
 const deltaYear = Math.floor(deltaDate / 1000 / (60 * 60 * 24) / 365);
 
 document.getElementById("agOpen").textContent = deltaYear;
+
+// ==================== BITRIX24 FORM LOGIC ====================
+
+// Функция для загрузки формы Bitrix24
+function loadBitrix24Form() {
+  // Создаем скрипт формы
+  var script = document.createElement("script");
+  script.dataset.b24Form = "inline/2501/j5df9k";
+  script.dataset.skipMoving = "true";
+  script.async = true;
+  script.textContent = `(function(w,d,u){var s=d.createElement('script');s.async=true;s.src=u+'?'+(Date.now()/180000|0);var h=d.getElementsByTagName('script')[0];h.parentNode.insertBefore(s,h);})(window,document,'https://cdn-ru.bitrix24.ru/b8657289/crm/form/loader_2501.js');`;
+
+  // Вставляем скрипт в контейнер формы
+  document.getElementById("b24-form-container").appendChild(script);
+}
+
+// Загружаем форму сразу после загрузки DOM
+document.addEventListener("DOMContentLoaded", function () {
+  loadBitrix24Form();
+});

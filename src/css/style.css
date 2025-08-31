@@ -1893,3 +1893,53 @@ html {
   text-align: center;
   word-wrap: break-word;
 }
+
+/*-------------------------------------------------------------*/
+
+/* ОСНОВНЫЕ СТИЛИ ДЛЯ СТРАНИЦЫ ПОЛИТИКИ */
+/* Общие стили для всего контента страницы */
+body.privacy-page .main,
+body.privacy-page header {
+  max-width: 800px; /* Ограничение ширины для всего контента */
+  margin-left: auto; /* Центрирование блока */
+  margin-right: auto; /* Центрирование блока */
+  padding: 0 15px; /* Защитные отступы по бокам для мобильных */
+  box-sizing: border-box; /* Чтобы padding не увеличивал общую ширину */
+}
+
+/* Стили для заголовка h5 */
+body.privacy-page h5.privacy-title {
+  font-size: clamp(1.3rem, 4vw, 2rem);
+  text-align: center;
+  color: #333;
+  margin-bottom: 1em;
+  line-height: 1.2;
+}
+
+/* Стили для текста (p) и header */
+body.privacy-page .main p,
+body.privacy-page header {
+  font-size: clamp(1rem, 3vw, 1.125rem); /* Для p и header одинаковый размер */
+  line-height: 1.6;
+  color: #555;
+  margin-bottom: 1em;
+}
+
+/* Индивидуальные стили ONLY для header */
+body.privacy-page header {
+  display: block;
+  text-align: center; /* Только header центрируем по тексту */
+  padding: 15px 0; /* Индивидуальные отступы для header */
+}
+
+/* Индивидуальные стили ONLY для параграфов (p) */
+body.privacy-page .main p {
+  text-align: justify; /* Только параграфы выравниваем по ширине */
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 480px) {
+  body.privacy-page .main p {
+    text-align: left; /* На мобильных убираем выравнивание по ширине */
+  }
+}
