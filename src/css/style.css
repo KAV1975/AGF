@@ -2067,42 +2067,114 @@ body.privacy-page .main p {
   font-family: inherit !important;
 }
 
-/* Адаптивность для мобильных устройств */
-@media (max-width: 768px) {
+/* ==================== УСИЛЕННАЯ АДАПТИВНОСТЬ ДЛЯ МОБИЛЬНЫХ ==================== */
+
+@media (max-width: 1024px) {
   #b24-form-container {
-    max-width: 100%;
-    margin: 15px auto;
-    padding: 0 10px;
+    max-width: 90%;
+    margin: 20px auto;
+  }
+}
+
+@media (max-width: 900px) {
+  #b24-form-container {
+    max-width: 95%;
   }
 
   #b24-form-container .b24-form-wrapper {
-    padding: 20px;
-    border-radius: 10px;
+    padding: 22px;
+  }
+}
+
+/* Планшеты и большие телефоны */
+@media (max-width: 767px) {
+  #b24-form-container {
+    max-width: 100% !important;
+    margin: 15px 0 !important;
+    padding: 0 5px !important;
+  }
+
+  #b24-form-container .b24-form-wrapper {
+    padding: 25px 20px !important;
+    border-radius: 12px !important;
+    margin: 0 auto !important;
+    width: 100% !important;
+    max-width: 480px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  }
+
+  #b24-form-container .b24-form-header-title {
+    font-size: 1.4rem !important;
+    line-height: 1.3 !important;
+  }
+
+  #b24-form-container .b24-form-control {
+    padding: 16px 18px !important;
+    font-size: 18px !important; /* Увеличиваем для мобильных */
+    min-height: 56px !important; /* Достаточная высота для касания */
+    border-width: 2px !important;
+  }
+
+  #b24-form-container .b24-form-btn {
+    padding: 18px !important;
+    font-size: 18px !important;
+    min-height: 60px !important;
+    border-width: 2px !important;
+  }
+
+  #b24-form-container .b24-form-field-label {
+    font-size: 16px !important;
+    margin-bottom: 10px !important;
+  }
+
+  #b24-form-container .b24-form-field {
+    margin-bottom: 25px !important;
+  }
+}
+
+/* Средние телефоны */
+@media (max-width: 480px) {
+  #b24-form-container {
+    padding: 0 8px !important;
+  }
+
+  #b24-form-container .b24-form-wrapper {
+    padding: 22px 18px !important;
+    border-radius: 10px !important;
+    max-width: 100% !important;
   }
 
   #b24-form-container .b24-form-header-title {
     font-size: 1.3rem !important;
+    padding-bottom: 12px !important;
   }
 
   #b24-form-container .b24-form-control {
-    padding: 12px 14px !important;
-    font-size: 16px !important; /* Фиксированный размер для iOS */
+    padding: 14px 16px !important;
+    font-size: 16px !important;
+    min-height: 52px !important;
   }
 
   #b24-form-container .b24-form-btn {
-    padding: 14px !important;
-    font-size: 15px !important;
+    padding: 16px !important;
+    font-size: 16px !important;
+    min-height: 56px !important;
   }
 
-  #b24-form-container .b24-form-field {
-    margin-bottom: 15px;
+  #b24-form-container .b24-form-field-label {
+    font-size: 15px !important;
   }
 }
 
-@media (max-width: 480px) {
+/* Маленькие телефоны */
+@media (max-width: 375px) {
+  #b24-form-container {
+    padding: 0 5px !important;
+  }
+
   #b24-form-container .b24-form-wrapper {
-    padding: 15px;
-    border-radius: 8px;
+    padding: 20px 15px !important;
+    border-radius: 8px !important;
   }
 
   #b24-form-container .b24-form-header-title {
@@ -2110,11 +2182,43 @@ body.privacy-page .main p {
   }
 
   #b24-form-container .b24-form-control {
-    padding: 12px !important;
+    padding: 12px 14px !important;
+    font-size: 16px !important;
+    min-height: 48px !important;
   }
 
   #b24-form-container .b24-form-btn {
-    padding: 12px !important;
+    padding: 14px !important;
+    font-size: 15px !important;
+    min-height: 52px !important;
+  }
+
+  #b24-form-container .b24-form-field-label {
+    font-size: 14px !important;
+  }
+
+  #b24-form-container .b24-form-field {
+    margin-bottom: 20px !important;
+  }
+}
+
+/* Очень маленькие телефоны */
+@media (max-width: 320px) {
+  #b24-form-container .b24-form-wrapper {
+    padding: 18px 12px !important;
+  }
+
+  #b24-form-container .b24-form-header-title {
+    font-size: 1.1rem !important;
+  }
+
+  #b24-form-container .b24-form-control {
+    padding: 11px 13px !important;
+    font-size: 15px !important;
+  }
+
+  #b24-form-container .b24-form-btn {
+    padding: 13px !important;
     font-size: 14px !important;
   }
 
@@ -2123,19 +2227,24 @@ body.privacy-page .main p {
   }
 }
 
-/* Особые стили для очень маленьких экранов */
-@media (max-width: 360px) {
+/* Особые стили для landscape ориентации */
+@media (max-width: 900px) and (orientation: landscape) {
   #b24-form-container {
-    padding: 0 5px;
+    max-width: 90% !important;
+    margin: 10px auto !important;
   }
 
   #b24-form-container .b24-form-wrapper {
-    padding: 12px;
+    padding: 18px !important;
+  }
+
+  #b24-form-container .b24-form-field {
+    margin-bottom: 15px !important;
   }
 
   #b24-form-container .b24-form-control {
-    padding: 10px !important;
-    font-size: 14px !important;
+    min-height: 44px !important;
+    padding: 10px 12px !important;
   }
 }
 
@@ -2150,6 +2259,7 @@ body.privacy-page .main p {
   all: initial !important;
   display: block !important;
   font-family: inherit !important;
+  width: 100% !important;
 }
 
 /* Исправление для темной темы */
@@ -2184,4 +2294,19 @@ body.privacy-page .main p {
 
 #b24-form-container .b24-form-wrapper {
   animation: formFadeIn 0.5s ease-out;
+}
+
+/* Форсируем отображение на мобильных */
+#b24-form-container {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  transform: none !important;
+}
+
+/* Убедимся, что форма не скрыта */
+#b24-form-container .b24-form-wrapper {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
 }
