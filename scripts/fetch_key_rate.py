@@ -4,72 +4,40 @@ import json
 from datetime import datetime
 import os
 import time
+import pandas as pd
 
 def get_key_rate():
     url = 'https://cbr.ru/hd_base/keyrate/'
     
-    # Добавляем заголовки чтобы имитировать браузер
+    # Упрощенные, но рабочие заголовки
     headers = {
         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-        'Accept-Language': 'ru-RU,ru;q=0.8,en-US;q=0.5,en;q=0.3',
-        'Accept-Encoding': 'gzip, deflate, br',
-        'Connection': 'keep-alive',
-        'Upgrade-Insecure-Requests': '1',
-        'Sec-Fetch-Dest': 'document',
-        'Sec-Fetch-Mode': 'navigate',
-        'Sec-Fetch-Site': 'none',
-        'Sec-Fetch-User': '?1',
-        'Cache-Control': 'max-age=0'
+        'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
     }
     
     try:
-        # Добавляем таймаут и заголовки
         response = requests.get(url, headers=headers, timeout=15)
         response.raise_for_status()
         
-        # Проверяем, что получили HTML, а не страницу с ошибкой
-        if '403 Forbidden' in response.text:
-            print("Получена страница с ошибкой 403 Forbidden")
-            return None
-            
-        soup = BeautifulSoup(response.text, 'html.parser')
+        # Используем pandas для парсинга таблицы - это надежнее
+        tables = pd.read_html(response.text)
         
-        # Ищем таблицу - класс может быть другим
-        table = soup.find('table', {'class': 'data'})
-        if not table:
-            # Пробуем найти любую таблицу с ставками
-            table = soup.find('table')
-            if not table:
-                print("Не удалось найти таблицу с ставками.")
-                print("Полученный HTML:", response.text[:500])  # Логируем начало HTML для отладки
-                return None
-            
-        rows = table.find_all('tr')
-        if len(rows) < 2:
-            print("В таблице нет данных или недостаточно строк.")
+        if not tables:
+            print("Не удалось найти таблицы на странице")
             return None
             
-        # Ищем строку с данными (пропускаем заголовок)
-        data_row = None
-        for row in rows[1:]:  # Пропускаем первую строку (заголовок)
-            cells = row.find_all('td')
-            if len(cells) >= 2:
-                data_row = row
-                break
-                
-        if not data_row:
-            print("Не найдено строк с данными.")
-            return None
-            
-        cells = data_row.find_all('td')
+        # Берем первую таблицу
+        df = tables[0]
         
-        if len(cells) < 2:
-            print("Недостаточно ячеек в строке.")
+        # Проверяем структуру таблицы
+        if len(df.columns) < 2:
+            print("Таблица имеет неправильную структуру")
             return None
             
-        date_str = cells[0].get_text(strip=True)
-        rate_str = cells[1].get_text(strip=True)
+        # Берем последнюю актуальную ставку
+        latest_row = df.iloc[0]
+        date_str = latest_row.iloc[0]
+        rate_str = str(latest_row.iloc[1])
         
         # Парсим дату и значение
         try:
@@ -93,35 +61,47 @@ def get_key_rate():
         print(f"Произошла ошибка: {e}")
         return None
 
-# Альтернативная функция на случай если основная не работает
+# Исправленная альтернативная функция
 def get_key_rate_alternative():
-    """Альтернативный способ получения ключевой ставки"""
+    """Альтернативный способ получения ключевой ставки через API"""
     try:
-        # Пробуем получить данные через API ЦБ
-        api_url = 'https://www.cbr.ru/scripts/XML_daily_eng.asp'
+        # Правильный URL для получения данных в машиночитаемом формате
+        api_url = 'https://www.cbr.ru/hd_base/keyrate/?UniDbQuery.Posted=True&UniDbQuery.From=2000-01-01&UniDbQuery.To=2030-12-31'
+        
         headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
+            'Accept': 'application/json, text/html, */*'
         }
         
         response = requests.get(api_url, headers=headers, timeout=15)
         response.raise_for_status()
         
-        # Парсим XML ответ для получения ключевой ставки
-        soup = BeautifulSoup(response.content, 'xml')
+        # Пробуем парсить как JSON (если API вернет JSON)
+        try:
+            data = response.json()
+            if data and len(data) > 0:
+                latest = data[0]
+                return {
+                    "date": latest['date'],
+                    "value": latest['value'],
+                    "updated_at": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+                }
+        except:
+            # Если не JSON, парсим HTML таблицу
+            pass
         
-        # Ищем ключевую ставку (Valute с ID="R01235")
-        key_rate = soup.find('Valute', {'ID': 'R01235'})
-        if key_rate:
-            value = key_rate.find('Value').get_text(strip=True)
-            nominal = key_rate.find('Nominal').get_text(strip=True)
+        # Парсим таблицу с помощью pandas
+        dfs = pd.read_html(response.text)
+        if dfs and len(dfs) > 0:
+            df = dfs[0]
+            latest_row = df.iloc[0]
             
-            # Конвертируем в число
-            rate_value = float(value.replace(',', '.')) / float(nominal)
+            date_str = str(latest_row.iloc[0])
+            rate_str = str(latest_row.iloc[1])
             
-            # Получаем дату из атрибута
-            date_str = soup.find('ValCurs').get('Date')
             date_obj = datetime.strptime(date_str, '%d.%m.%Y')
             formatted_date = date_obj.strftime('%Y-%m-%d')
+            rate_value = float(rate_str.replace(',', '.'))
             
             return {
                 "date": formatted_date,
@@ -129,11 +109,46 @@ def get_key_rate_alternative():
                 "updated_at": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
             }
         
-        print("Не удалось найти ключевую ставку в XML ответе")
+        print("Не удалось найти данные в альтернативном методе")
         return None
         
     except Exception as e:
         print(f"Альтернативный метод также не сработал: {e}")
+        return None
+
+# Еще один запасной метод
+def get_key_rate_backup():
+    """Резервный метод через главную страницу ЦБ"""
+    try:
+        url = 'https://www.cbr.ru/'
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
+        }
+        
+        response = requests.get(url, headers=headers, timeout=15)
+        response.raise_for_status()
+        
+        soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Ищем блок с ключевой ставкой на главной
+        key_rate_block = soup.find('div', class_='key-rate')
+        if key_rate_block:
+            rate_text = key_rate_block.get_text(strip=True)
+            # Извлекаем число из текста
+            import re
+            match = re.search(r'(\d+,\d+)', rate_text)
+            if match:
+                rate_value = float(match.group(1).replace(',', '.'))
+                return {
+                    "date": datetime.now().strftime('%Y-%m-%d'),
+                    "value": rate_value,
+                    "updated_at": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
+                }
+        
+        return None
+        
+    except Exception as e:
+        print(f"Резервный метод не сработал: {e}")
         return None
 
 # Основная логика
@@ -146,8 +161,14 @@ if __name__ == "__main__":
     # Если основной метод не сработал, пробуем альтернативный
     if not key_rate_data:
         print("Основной метод не сработал, пробуем альтернативный...")
-        time.sleep(2)  # Небольшая задержка
+        time.sleep(1)
         key_rate_data = get_key_rate_alternative()
+    
+    # Если альтернативный не сработал, пробуем резервный
+    if not key_rate_data:
+        print("Альтернативный метод не сработал, пробуем резервный...")
+        time.sleep(1)
+        key_rate_data = get_key_rate_backup()
     
     # Создаем папку 'data', если её нет
     os.makedirs('data', exist_ok=True)
@@ -158,8 +179,7 @@ if __name__ == "__main__":
         with open(file_path, 'w', encoding='utf-8') as f:
             json.dump(key_rate_data, f, ensure_ascii=False, indent=2)
         print(f"Ключевая ставка успешно сохранена в {file_path}: {key_rate_data}")
-        exit(0)  # Успешное завершение
+        exit(0)
     else:
         print("Не удалось получить ключевую ставку. Файл не будет обновлен.")
-        # Можно выйти с ошибкой, чтобы Action пометился как failed
         exit(1)
