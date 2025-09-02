@@ -44,6 +44,19 @@ def get_key_rate():
             date_obj = datetime.strptime(date_str, '%d.%m.%Y')
             formatted_date = date_obj.strftime('%Y-%m-%d')
             rate_value = float(rate_str.replace(',', '.'))
+            
+            # Проверяем корректность значения ставки
+            if rate_value > 100:  # Если значение слишком большое
+                print(f"Подозрительное значение ставки: {rate_value}. Делим на 100.")
+                rate_value = rate_value / 100
+            elif rate_value < 1:  # Если значение слишком маленькое
+                print(f"Подозрительное значение ставки: {rate_value}. Умножаем на 100.")
+                rate_value = rate_value * 100
+                
+            # Округляем до 2 знаков после запятой
+            rate_value = round(rate_value, 2)
+            print(f"Получена ставка: {rate_value}%")
+            
         except ValueError as e:
             print(f"Ошибка парсинга данных: {e}")
             return None
@@ -81,9 +94,18 @@ def get_key_rate_alternative():
             data = response.json()
             if data and len(data) > 0:
                 latest = data[0]
+                rate_value = latest['value']
+                
+                # Проверяем корректность значения
+                if rate_value > 100:
+                    rate_value = rate_value / 100
+                elif rate_value < 1:
+                    rate_value = rate_value * 100
+                rate_value = round(rate_value, 2)
+                
                 return {
                     "date": latest['date'],
-                    "value": latest['value'],
+                    "value": rate_value,
                     "updated_at": datetime.utcnow().strftime('%Y-%m-%dT%H:%M:%SZ')
                 }
         except:
@@ -102,6 +124,13 @@ def get_key_rate_alternative():
             date_obj = datetime.strptime(date_str, '%d.%m.%Y')
             formatted_date = date_obj.strftime('%Y-%m-%d')
             rate_value = float(rate_str.replace(',', '.'))
+            
+            # Проверяем корректность значения
+            if rate_value > 100:
+                rate_value = rate_value / 100
+            elif rate_value < 1:
+                rate_value = rate_value * 100
+            rate_value = round(rate_value, 2)
             
             return {
                 "date": formatted_date,
@@ -139,6 +168,14 @@ def get_key_rate_backup():
             match = re.search(r'(\d+,\d+)', rate_text)
             if match:
                 rate_value = float(match.group(1).replace(',', '.'))
+                
+                # Проверяем корректность значения
+                if rate_value > 100:
+                    rate_value = rate_value / 100
+                elif rate_value < 1:
+                    rate_value = rate_value * 100
+                rate_value = round(rate_value, 2)
+                
                 return {
                     "date": datetime.now().strftime('%Y-%m-%d'),
                     "value": rate_value,
