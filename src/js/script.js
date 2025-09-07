@@ -3153,6 +3153,30 @@ document.getElementById("agOpen").textContent = deltaYear;
 
 // ==================== BITRIX24 FORM LOGIC ====================
 
+// // Функция для загрузки формы Bitrix24
+// function loadBitrix24Form() {
+//   document
+//     .getElementById("b24-form-container")
+//     .setAttribute("data-consent", "true");
+//   // Создаем скрипт формы
+//   var script = document.createElement("script");
+//   script.dataset.b24Form = "inline/2501/j5df9k";
+//   script.dataset.skipMoving = "true";
+//   script.dataset.consent = "true";
+//   script.async = true;
+//   script.textContent = `(function(w,d,u){var s=d.createElement('script');s.async=true;s.src=u+'?'+(Date.now()/180000|0);var h=d.getElementsByTagName('script')[0];h.parentNode.insertBefore(s,h);})(window,document,'https://cdn-ru.bitrix24.ru/b8657289/crm/form/loader_2501.js');`;
+
+//   // Вставляем скрипт в контейнер формы
+//   document.getElementById("b24-form-container").appendChild(script);
+// }
+
+// // Загружаем форму сразу после загрузки DOM
+// document.addEventListener("DOMContentLoaded", function () {
+//   loadBitrix24Form();
+// });
+
+// ==================== BITRIX24 FORM LOGIC ====================
+
 // Функция для загрузки формы Bitrix24
 function loadBitrix24Form() {
   // Создаем скрипт формы
@@ -3166,7 +3190,64 @@ function loadBitrix24Form() {
   document.getElementById("b24-form-container").appendChild(script);
 }
 
-// Загружаем форму сразу после загрузки DOM
+// Функция для установки галочки согласия
+function setConsentCheckbox() {
+  // Ищем checkbox согласия
+  const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+  checkboxes.forEach((checkbox) => {
+    // Проверяем различные варианты идентификации checkbox согласия
+    const label = checkbox.closest("label");
+    const labelText = label ? label.textContent.toLowerCase() : "";
+    const parentText = checkbox.parentElement
+      ? checkbox.parentElement.textContent.toLowerCase()
+      : "";
+
+    if (
+      labelText.includes("согла") ||
+      parentText.includes("согла") ||
+      labelText.includes("agree") ||
+      parentText.includes("agree") ||
+      checkbox.name.toLowerCase().includes("consent") ||
+      checkbox.id.toLowerCase().includes("consent")
+    ) {
+      checkbox.checked = true;
+      console.log("Галочка согласия проставлена");
+    }
+  });
+}
+
+// Загружаем форму и отслеживаем ее появление
 document.addEventListener("DOMContentLoaded", function () {
   loadBitrix24Form();
+
+  // Используем MutationObserver для отслеживания появления формы
+  const observer = new MutationObserver(function (mutations) {
+    mutations.forEach(function (mutation) {
+      if (mutation.addedNodes.length) {
+        // Проверяем, появилась ли форма
+        const form = document.querySelector(
+          ".b24-form-container, [data-b24form]"
+        );
+        if (form) {
+          // Даем форме время на полную загрузку
+          setTimeout(setConsentCheckbox, 1500);
+          // Можно остановить observer после нахождения формы
+          observer.disconnect();
+        }
+      }
+    });
+  });
+
+  // Начинаем наблюдение за контейнером формы
+  const container = document.getElementById("b24-form-container");
+  observer.observe(container, {
+    childList: true,
+    subtree: true,
+    attributes: true,
+  });
+
+  // Дополнительная проверка на случай если форма уже загрузилась быстро
+  setTimeout(setConsentCheckbox, 2000);
+  setTimeout(setConsentCheckbox, 4000);
 });
