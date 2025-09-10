@@ -2279,8 +2279,7 @@ body.privacy-page .main p {
   #b24-form-container .b24-form-field-label {
     color: #ffffff !important;
   }
-}
-
+}*/
 
 /* Анимация появления */
 @keyframes formFadeIn {
@@ -2311,4 +2310,152 @@ body.privacy-page .main p {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+}
+
+/* ===== СТИЛИ ДЛЯ ЛОГОТИПА ===== */
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 15px 0;
+  margin: 20px 0;
+  aspect-ratio: 300/120; /* Соотношение сторон логотипа */
+}
+
+.logo img {
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+/* Базовые размеры для десктопов */
+.logo img {
+  width: 400px;
+  /* max-height: 160px; */
+  height: 160px;
+}
+
+/* Планшеты и маленькие ноутбуки */
+@media (max-width: 1024px) {
+  .logo img {
+    width: 250px;
+    max-height: 100px;
+  }
+}
+
+/* Планшеты */
+@media (max-width: 768px) {
+  .logo {
+    margin: 15px 0;
+    padding: 12px 0;
+  }
+
+  .logo img {
+    width: 200px;
+    max-height: 80px;
+  }
+}
+
+/* Большие мобильные */
+@media (max-width: 480px) {
+  .logo {
+    margin: 12px 0;
+    padding: 10px 0;
+  }
+
+  .logo img {
+    width: 160px;
+    max-height: 65px;
+  }
+}
+
+/* Средние мобильные */
+@media (max-width: 375px) {
+  .logo img {
+    width: 140px;
+    max-height: 55px;
+  }
+}
+
+/* Маленькие мобильные (320px) */
+@media (max-width: 320px) {
+  .logo {
+    margin: 10px 0;
+    padding: 8px 0;
+  }
+
+  .logo img {
+    width: 120px;
+    max-height: 50px;
+  }
+}
+
+/* Ландшафтная ориентация на мобильных */
+@media (max-height: 480px) and (orientation: landscape) {
+  .logo img {
+    width: 100px;
+    max-height: 40px;
+  }
+
+  .logo {
+    margin: 8px 0;
+    padding: 5px 0;
+  }
+}
+
+/* Обеспечиваем плавное масштабирование */
+.logo img {
+  transition: all 0.3s ease;
+}
+
+/* Гарантируем, что логотип не будет слишком маленьким */
+.logo img {
+  min-width: 80px;
+  min-height: 30px;
+}
+
+/* @media (max-width: 767px) {
+  #lastElem2 .container-left {
+    order: 2; */ /* Левая колонка будет второй */ /*
+  }
+
+  #lastElem2 .container-right {
+    order: 1; */ /* Правая колонка будет первой */ /*
+  }
+
+  #lastElem2 .logo {
+    margin-top: 30px;
+    text-align: center;
+  }
+
+  #lastElem2 {
+    display: flex;
+    flex-direction: column;
+  }
+} */
+
+@media (max-width: 767px) {
+  #lastElem {
+    margin-bottom: 40px; /* Добавляем отступ после секции с графиком */
+  }
+
+  #lastElem2 {
+    margin-top: 20px; /* Добавляем отступ перед секцией с пояснениями */
+  }
+
+  /*  контейнеры занимают всю ширину */
+  #lastElem .container-left,
+  #lastElem .container-right,
+  #lastElem2 .container-left,
+  #lastElem2 .container-right {
+    width: 100% !important;
+    float: none;
+  }
+
+  /* Дополнительно: уменьшаем высоту графика на мобильных */
+  #myBoxPlot {
+    height: 300px !important;
+    min-height: 300px !important;
+  }
 }
