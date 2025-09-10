@@ -1956,11 +1956,11 @@ body.privacy-page .main p {
 
 /* Обертка формы Bitrix24 */
 #b24-form-container .b24-form-wrapper {
-  background: #ffffff;
+  /* background: #ffffff; */
   border-radius: 12px;
   padding: 25px;
-  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
-  border: 1px solid #e0e0e0;
+  /* box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1); */
+  /* border: 1px solid #e0e0e0; */
 }
 
 /* Заголовок формы */
@@ -1968,11 +1968,11 @@ body.privacy-page .main p {
   text-align: center;
   margin-bottom: 25px;
   padding-bottom: 15px;
-  border-bottom: 2px solid #000000;
+  /* border-bottom: 2px solid #000000; */
 }
 
 #b24-form-container .b24-form-header-title {
-  color: #000000 !important;
+  /* color: #000000 !important; */
   font-size: 1.5rem !important;
   font-weight: 700 !important;
   margin: 0 !important;
@@ -1988,7 +1988,7 @@ body.privacy-page .main p {
 #b24-form-container .b24-form-field-label {
   display: block;
   margin-bottom: 8px;
-  color: #000000 !important;
+  /* color: #000000 !important; */
   font-weight: 600 !important;
   font-size: 14px !important;
   font-family: inherit !important;
@@ -1997,29 +1997,29 @@ body.privacy-page .main p {
 #b24-form-container .b24-form-control {
   width: 100% !important;
   padding: 14px 16px !important;
-  border: 2px solid #000000 !important;
+  /* border: 2px solid #000000 !important; */
   border-radius: 6px !important;
   font-size: 16px !important;
   font-family: inherit !important;
-  color: #000000 !important;
-  background: #ffffff !important;
+  /* color: #000000 !important; */
+  /* background: #ffffff !important; */
   transition: all 0.3s ease !important;
   box-sizing: border-box !important;
 }
 
 #b24-form-container .b24-form-control:focus {
   outline: none !important;
-  border-color: #000000 !important;
-  box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1) !important;
+  /* border-color: #000000 !important; */
+  /* box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.1) !important; */
 }
 
 /* Кнопка отправки - ЧЕРНАЯ */
 #b24-form-container .b24-form-btn {
   width: 100% !important;
   padding: 16px !important;
-  background: #000000 !important;
+  /* background: #000000 !important; */
   color: #ffffff !important;
-  border: 2px solid #000000 !important;
+  /* border: 2px solid #000000 !important; */
   border-radius: 6px !important;
   font-size: 16px !important;
   font-weight: 700 !important;
@@ -2031,8 +2031,8 @@ body.privacy-page .main p {
 }
 
 #b24-form-container .b24-form-btn:hover {
-  background: #333333 !important;
-  border-color: #333333 !important;
+  /* background: #333333 !important;
+  border-color: #333333 !important; */
   transform: translateY(-1px);
 }
 
@@ -2058,9 +2058,10 @@ body.privacy-page .main p {
   text-align: center !important;
   margin-top: 20px !important;
 }
+*/
 
 /* Чекбоксы и радиокнопки */
-#b24-form-container .b24-form-checkbox-label,
+ #b24-form-container .b24-form-checkbox-label,
 #b24-form-container .b24-form-radio-label {
   color: #000000 !important;
   font-weight: 500 !important;
@@ -2254,15 +2255,15 @@ body.privacy-page .main p {
   max-width: 100% !important;
 }
 
-/* Убираем стандартные стили Bitrix24 */
-#b24-form-container .b24-form-content {
+/* Убираем стандартные стили Bitrix24, ЕСЛИ НУЖНО!!!!*/
+/* #b24-form-container .b24-form-content {
   all: initial !important;
   display: block !important;
   font-family: inherit !important;
   width: 100% !important;
-}
+} */
 
-/* Исправление для темной темы */
+/* Исправление для темной темы 
 @media (prefers-color-scheme: dark) {
   #b24-form-container .b24-form-wrapper {
     background: #1a1a1a !important;
@@ -2279,6 +2280,7 @@ body.privacy-page .main p {
     color: #ffffff !important;
   }
 }
+
 
 /* Анимация появления */
 @keyframes formFadeIn {

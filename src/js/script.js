@@ -3221,11 +3221,11 @@ function setConsentCheckbox() {
 document.addEventListener("DOMContentLoaded", function () {
   loadBitrix24Form();
 
-  // Используем MutationObserver для отслеживания появления формы
+  // Использование MutationObserver для отслеживания появления формы
   const observer = new MutationObserver(function (mutations) {
     mutations.forEach(function (mutation) {
       if (mutation.addedNodes.length) {
-        // Проверяем, появилась ли форма
+        // Проверка, появилась ли форма
         const form = document.querySelector(
           ".b24-form-container, [data-b24form]"
         );
@@ -3239,7 +3239,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
   });
 
-  // Начинаем наблюдение за контейнером формы
+  // наблюдение за контейнером формы
   const container = document.getElementById("b24-form-container");
   observer.observe(container, {
     childList: true,
